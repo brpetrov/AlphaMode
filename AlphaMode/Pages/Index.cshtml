@@ -8,32 +8,76 @@
 
 
 <!-- One hero section: image + text bullets (can be replaced by page content if you want) -->
-<section class="am-hero">
+<section class="py-5 am-hero">
     <div class="container">
         <div class="row g-4 align-items-center">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 text-center mx-auto">
                 <!-- Replace with your product image: /img/bottle.png -->
-                <div class="am-img-placeholder">
-                    Изображение на продукта
+                <div>
+                    <img src="~/images/alphamodebottle.png" class="w-50 mx-auto d-block" />
                 </div>
             </div>
             <div class="col-12 col-md-6">
-                <h1 class="mb-3">AlphaMode — Енергия, фокус и спокойствие</h1>
-                <p class="lead mb-3">
-                    Добавка с екстракт от ашваганда и витамини за ежедневен тонус.
-                </p>
-                <ul class="am-bullets list-unstyled">
-                    <li>✔ Подкрепя <strong>концентрацията</strong> и яснотата на мисълта</li>
-                    <li>✔ Помага за <strong>намаляване на стреса</strong> и напрежението</li>
-                    <li>✔ Подпомага <strong>възстановяването</strong> и качеството на съня</li>
-                    <li>✔ Подходящо за натоварени дни и тренировки</li>
-                </ul>
+                <div class="mx-auto mb-5">
+                    <h1 class="mb-5">Енергия, фокус и спокойствие</h1>
+                    <p class="lead mb-4">
+                        Добавка с екстракт от ашваганда и витамини за ежедневен тонус.
+                    </p>
+                    <ul class="am-bullets list-unstyled">
+                        <li>✔ Подкрепя <strong>концентрацията</strong> и яснотата на мисълта</li>
+                        <li>✔ Помага за <strong>намаляване на стреса</strong> и напрежението</li>
+                        <li>✔ Подпомага <strong>възстановяването</strong> и качеството на съня</li>
+                        <li>✔ Подходящо за натоварени дни и тренировки</li>
+                    </ul>
+                </div>
+              
 
                 <!-- Example CTA -->
-                <div class="mt-4">
-                    <a class="btn btn-dark btn-lg rounded-pill px-4" asp-page="/Order/Index">Поръчай сега</a>
+                <div class="mt-5 text-center">
+                    <a class="btn btn-dark btn-lg rounded-pill px-5" asp-page="/Order/Index">Поръчай сега</a>
                 </div>
             </div>
         </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h2 class="my-5 fw-bold">Защо AlphaMode?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4 h-100">
+                    <div class="display-6 mb-3">⚡</div>
+                    <h5 class="fw-bold">Повече енергия</h5>
+                    <p class="mb-0 small text-muted">Подкрепа през целия ден – за работа, учене и тренировки.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 h-100">
+                    <div class="display-6 mb-3">🧘</div>
+                    <h5 class="fw-bold">По-малко стрес</h5>
+                    <p class="mb-0 small text-muted">Адаптоген, който помага на тялото да се справи с напрежението.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 h-100">
+                    <div class="display-6 mb-3">🌙</div>
+                    <h5 class="fw-bold">По-добър сън</h5>
+                    <p class="mb-0 small text-muted">Подпомага качествената почивка и възстановяване след активен ден.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="py-5 text-center">
+    <div class="container">
+        <h2 class="fw-bold my-5">Готови ли сте за промяна?</h2>
+        <p class="mb-4 lead text-muted">
+            Изпробвайте AlphaMode днес и усетете разликата. <br />
+            Ако не сте доволни – предлагаме 30-дневна гаранция за връщане.
+        </p>
+        <a class="btn btn-dark btn-lg rounded-pill my-5 px-5" asp-page="/Order/Index">Опитай Без Риск</a>
     </div>
 </section>
