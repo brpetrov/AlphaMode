@@ -1,0 +1,58 @@
+﻿@*
+  Public layout for AlphaMode (no navbar).
+  - Text logo at top
+  - Montserrat font
+  - Bootstrap + site.css
+  - Footer with legal links
+  - Lightweight, fast
+*@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] ?? "AlphaMode")</title>
+
+    <!-- Font -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/scss/site.min.css" rel="stylesheet" />
+
+
+</head>
+<body>
+    <!-- Header with text logo -->
+    <header class="am-header">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a class="am-logo fs-4" asp-area="" asp-page="/Index">AlphaMode</a>
+            <!-- (Optional) space for a CTA button later -->
+        </div>
+    </header>
+
+
+
+    <!-- Page content will render here if you add more sections on a page -->
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top py-4 mt-4">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <span class="small text-muted">&copy; @DateTime.UtcNow.Year — AlphaMode</span>
+            <nav class="small">
+                <a class="link-secondary me-3" asp-page="/Privacy">Поверителност</a>
+                <a class="link-secondary me-3" asp-page="/Terms">Условия</a>
+                <a class="link-secondary me-3" asp-page="/Returns">Връщане</a>
+                <a class="link-secondary" asp-page="/Disclaimer">Отказ от отговорност</a>
+            </nav>
+        </div>
+    </footer>
+
+    <!-- JS (Bootstrap 5 only; jQuery not required here) -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,70 @@
+// AlphaMode public styles (SCSS)
+
+// Variables
+$am-carbon: #111827; // near-carbon
+$am-ink: #0b0f17;
+$font-stack: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+// Expose as CSS custom properties so existing var() usages still work
+:root {
+    --am-carbon: #{$am-carbon};
+    --am-ink: #{$am-ink};
+}
+
+html, body {
+    font-family: $font-stack;
+}
+
+.am-header {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgba(0,0,0,.06);
+    background: #fff;
+}
+
+.am-logo {
+    font-weight: 700;
+    letter-spacing: .5px;
+    color: var(--am-carbon);
+    text-decoration: none;
+}
+
+.am-hero {
+    padding: clamp(2rem, 5vw, 4rem) 0;
+
+    h1 {
+        font-weight: 700;
+        color: var(--am-ink);
+    }
+
+    p.lead {
+        color: #444;
+    }
+}
+
+.am-bullets {
+    li {
+        margin-bottom: .5rem;
+    }
+}
+
+.am-img-placeholder {
+    aspect-ratio: 1/1;
+    width: 100%;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #f0f2f5, #e9eef2);
+    display: grid;
+    place-items: center;
+    color: #6b7280;
+    font-weight: 600;
+    user-select: none;
+}
+
+footer {
+    a {
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
