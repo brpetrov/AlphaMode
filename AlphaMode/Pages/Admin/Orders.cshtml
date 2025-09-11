@@ -1,0 +1,106 @@
+﻿@page
+@model AlphaMode.Pages.Admin.OrdersModel
+@{
+    ViewData["Title"] = "Поръчки";
+    var successMsg = TempData["Success"] as string;
+}
+
+<h1 class="mb-4 fw-semibold"><i class="bi bi-box-seam"></i> Всички поръчки</h1>
+
+<div class="table-responsive">
+    <table id="ordersTable" class="table table-hover table-bordered align-middle">
+        <thead class="table-light text-nowrap">
+            <tr>
+                <th>Номер</th>
+                <th>Име</th>
+                <th>Телефон</th>
+                <th>Адрес</th>
+                <th class="text-center" style="width:90px;">Количество</th>
+                <th>Статус</th>
+                <th>Промо код</th>
+                <th>Дата</th>
+                <th class="text-center" style="width:80px;">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model.Orders)
+            {
+                <tr>
+                    <td>@o.Id</td>
+                    <td>@o.FullName</td>
+                    <td>@o.Telephone</td>
+                    <td>@o.Address</td>
+                    <td class="text-center">@o.Quantity</td>
+                    <td>@o.Status</td>
+                    <td>@o.PromoCode</td>
+                    <td>@o.CreatedUtc.ToLocalTime():dd.MM.yyyy&nbsp;HH:mm</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-danger js-delete"
+                                data-id="@o.Id" data-name="@o.FullName">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- confirm modal -->
+<div class="modal fade" id="delModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form method="post" asp-page-handler="Delete" class="modal-content">
+            @Html.AntiForgeryToken()
+            <div class="modal-header">
+                <h5 class="modal-title text-danger"><i class="bi bi-exclamation-triangle"></i> Изтриване</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="id" id="del-id" />
+                <p>Сигурни ли сте, че искате да изтриете поръчка <strong id="del-name"></strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                <button type="submit" class="btn btn-danger">Да, изтрий</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- snack / toast -->
+@if (!string.IsNullOrEmpty(successMsg))
+{
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:11">
+        <div id="snackbar" class="toast align-items-center text-bg-success border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">@successMsg</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+
+            // DataTables
+            $('#ordersTable').DataTable({
+                order: [[0, 'desc']],
+                pageLength: 25,
+               
+            });
+
+            // delete click
+            $('.js-delete').on('click', function () {
+                $('#del-id').val($(this).data('id'));
+                $('#del-name').text('#' + $(this).data('id') + ' (' + $(this).data('name') + ')');
+                new bootstrap.Modal('#delModal').show();
+            });
+
+            // toast
+            const toast = document.getElementById('snackbar');
+            if (toast) new bootstrap.Toast(toast, { delay: 3000 }).show();
+        });
+    </script>
+}

@@ -1,0 +1,7 @@
+﻿@model dynamic
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div asp-validation-summary="ModelOnly"
+         class="alert alert-danger" role="alert"></div>
+}

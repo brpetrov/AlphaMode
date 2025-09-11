@@ -54,3 +54,15 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
+
+form .form-label {
+  font-weight: 600;
+}
+
+input.input-validation-error, select.input-validation-error, textarea.input-validation-error {
+  border-color: #dc3545;
+}
+
+.validation-summary-errors, .field-validation-error {
+  color: #dc3545;
+}

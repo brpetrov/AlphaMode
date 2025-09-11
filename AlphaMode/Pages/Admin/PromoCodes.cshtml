@@ -1,0 +1,87 @@
+﻿@page
+@model AlphaMode.Pages.Admin.PromoCodesModel
+@{
+    ViewData["Title"] = "Промо кодове";
+}
+
+<h1 class="mb-4 fw-semibold"><i class="bi bi-ticket-perforated"></i> Промо кодове</h1>
+
+<!-- Add-new form -->
+<form method="post" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label asp-for="Input.Code" class="form-label fw-semibold">
+            <i class="bi bi-tag-fill"></i> Код
+        </label>
+        <input asp-for="Input.Code" class="form-control" />
+        <span asp-validation-for="Input.Code" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Input.ValidUntil" class="form-label fw-semibold">
+            <i class="bi bi-calendar-date"></i> Валиден до
+        </label>
+        <input asp-for="Input.ValidUntil" class="form-control" />
+    </div>
+
+    <div class="col-md-4 d-flex align-items-end">
+        <button class="btn btn-dark px-4" type="submit">
+            <i class="bi bi-plus-circle me-1"></i> Добави
+        </button>
+    </div>
+</form>
+
+<partial name="_ValidationSummary" />
+
+<!-- List table -->
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light text-nowrap">
+            <tr>
+                <th><i class="bi bi-tag"></i> Код</th>
+                <th><i class="bi bi-calendar-event"></i> Валиден до</th>
+                <th class="text-center"><i class="bi bi-check2-circle"></i> Активен?</th>
+                <th><i class="bi bi-clock-history"></i> Създаден</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var p in Model.Codes)
+            {
+                var expired = p.ValidUntilUtc != null && p.ValidUntilUtc < DateTime.UtcNow;
+                var active = p.IsActive && !expired;
+
+                <tr class="@(expired ? "table-danger" : "")">
+                    <td class="fw-semibold">@p.Code</td>
+
+                    <td>
+                        @if (p.ValidUntilUtc == null)
+                        {
+                            <em>Безсрочен</em>
+                        }
+                        else
+                        {
+                            @p.ValidUntilUtc.Value.ToLocalTime().ToString("dd.MM.yyyy")
+                        }
+                    </td>
+
+                    <td class="text-center">
+                        @if (active)
+                        {
+                            <span class="text-success"><i class="bi bi-check-circle-fill"></i></span>
+                        }
+                        else
+                        {
+                            <span class="text-danger"><i class="bi bi-x-circle-fill"></i></span>
+                        }
+                    </td>
+
+                    <td>@p.CreatedUtc.ToLocalTime().ToString("dd.MM.yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,17 @@
+﻿@page "{id:int}"
+
+@model AlphaMode.Pages.OrderSuccessModel
+
+@{
+    Layout = "_PublicLayout";
+    ViewData["Title"] = "Благодарим!";
+}
+
+<section class="py-5">
+    <div class="container text-center" style="max-width: 720px;">
+        <h1>Благодарим за поръчката!</h1>
+        <p>Номер на поръчка: <strong>@Model.OrderId</strong></p>
+        <p>Ще се свържем с вас за потвърждение и доставка.</p>
+        <a class="btn btn-dark mt-3" asp-page="/Index">Към началото</a>
+    </div>
+</section>
