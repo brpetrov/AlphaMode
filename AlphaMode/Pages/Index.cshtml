@@ -6,7 +6,6 @@
     ViewData["Title"] = "Home page";
 }
 
-
 <!-- One hero section: image + text bullets (can be replaced by page content if you want) -->
 <section class="py-5 am-hero">
     <div class="container">
@@ -70,7 +69,6 @@
     </div>
 </section>
 
-
 <section class="py-5 text-center">
     <div class="container">
         <h2 class="fw-bold my-5">Готови ли сте за промяна?</h2>
@@ -79,5 +77,100 @@
             Ако не сте доволни – предлагаме 30-дневна гаранция за връщане.
         </p>
         <a class="btn btn-dark btn-lg rounded-pill my-5 px-5" asp-page="/Order">Опитай Без Риск</a>
+    </div>
+</section>
+
+<section id="reviews-summary" class="py-5 bg-white">
+    <div class="container">
+        <h2 class="fw-bold text-center mb-5">
+            <i class="bi bi-chat-heart-fill me-2"></i> Отзиви на клиенти
+        </h2>
+        <div class="row text-center align-items-center gx-4">
+            <!-- average left -->
+            <div class="col-md-4 mb-4 mb-md-0" id="avgBlock"></div>
+
+            <!-- histogram middle -->
+            <div class="col-md-4" id="histogramBlock"></div>
+
+            <!-- button right -->
+            <div class="col-md-4 d-grid">
+                <div>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                        Напишете отзив
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form class="modal-content" id="reviewForm">
+            <div class="modal-header">
+                <h5 class="modal-title">Нов отзив</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Име</label>
+                    <input name="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">E-mail</label>
+                    <input name="email" type="email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Отзив</label>
+                    <textarea name="text" rows="4" class="form-control" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label d-block" for="ratingSelect">Оценка</label>
+
+                    <div class="d-flex  align-items-start gap-2">
+                        <select id="ratingSelect" name="rating" class="form-select w-auto" required>
+                            <option value="" disabled selected>Изберете оценка</option>
+                            <option value="5">5</option>
+                            <option value="4">4 </option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+
+                    </div>
+                    <div id="ratingPreview" class="text-dark h4 my-3" aria-hidden="true"></div>
+           
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                <button class="btn btn-danger" type="submit">Изпрати</button>
+            </div>
+        </form>
+
+        <div id="thankYouMsg" class="modal-content text-center d-none py-5">
+            <div class="modal-body">
+                <div class="display-5 mb-3 text-dark">Благодарим!</div>
+                <p class="lead mb-0">Вашият отзив беше изпратен успешно.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button class="btn btn-outline-dark" data-bs-dismiss="modal">Затвори</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ★ Reviews Section -->
+<section id="reviews" class="py-5 bg-light border-top">
+    <div class="container">
+      
+        <!-- Reviews grid -->
+        <div id="reviewsContainer" class="row g-4"></div>
+
+        <!-- Pagination -->
+        <nav class="mt-4">
+            <ul id="reviewsPager" class="pagination justify-content-center"></ul>
+        </nav>
     </div>
 </section>

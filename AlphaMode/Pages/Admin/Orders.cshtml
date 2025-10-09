@@ -1,4 +1,6 @@
 ﻿@page
+@using AlphaMode.Helpers
+@using AlphaMode.Models
 @model AlphaMode.Pages.Admin.OrdersModel
 @{
     ViewData["Title"] = "Поръчки";
@@ -15,11 +17,13 @@
                 <th>Име</th>
                 <th>Телефон</th>
                 <th>Адрес</th>
-                <th class="text-center" style="width:90px;">Количество</th>
-                <th>Статус</th>
+                <th class="text-center" style="width:90px;">
+                    Количество
+                </th>
                 <th>Промо код</th>
                 <th>Дата</th>
-                <th class="text-center" style="width:80px;">Действия</th>
+                <th>Статус</th>
+                <th class="text-center" style="width:80px;"></th>
             </tr>
         </thead>
         <tbody>
@@ -31,9 +35,16 @@
                     <td>@o.Telephone</td>
                     <td>@o.Address</td>
                     <td class="text-center">@o.Quantity</td>
-                    <td>@o.Status</td>
+               
                     <td>@o.PromoCode</td>
-                    <td>@o.CreatedUtc.ToLocalTime():dd.MM.yyyy&nbsp;HH:mm</td>
+                    <td>@o.CreatedUtc.ToLocalTime()</td>
+                    <td>
+                        <a href="#" class="order-status-link text-decoration-underline"
+                           data-id="@o.Id"
+                           data-status="@((int)o.Status)">
+                            @DisplayHelper.GetEnumDisplayName(o.Status)
+                        </a>
+                    </td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-danger js-delete"
                                 data-id="@o.Id" data-name="@o.FullName">
@@ -67,6 +78,35 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form id="statusForm" method="post" asp-page-handler="UpdateStatus" class="modal-content">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="status-order-id" />
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-arrow-repeat"></i> Смяна на статус</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="status-dropdown" class="form-label">Изберете статус</label>
+                    <select id="status-dropdown" name="status" class="form-select" required>
+                        @foreach (OrderStatus status in Enum.GetValues(typeof(OrderStatus)))
+                        {
+                            <option value="@((int)status)">@DisplayHelper.GetEnumDisplayName(status)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                <button type="submit" class="btn btn-primary">Запази</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- snack / toast -->
 @if (!string.IsNullOrEmpty(successMsg))
 {
@@ -79,6 +119,8 @@
         </div>
     </div>
 }
+
+
 
 @section Scripts {
     <script>
@@ -101,6 +143,26 @@
             // toast
             const toast = document.getElementById('snackbar');
             if (toast) new bootstrap.Toast(toast, { delay: 3000 }).show();
+        });
+
+
+                $(function () {
+            // ... (your other code)
+
+            // Click status link: open modal and fill values
+            $('.order-status-link').on('click', function (e) {
+                e.preventDefault();
+                const orderId = $(this).data('id');
+                const currentStatus = $(this).data('status');
+                $('#status-order-id').val(orderId);
+                $('#status-dropdown').val(currentStatus);
+                new bootstrap.Modal('#statusModal').show();
+            });
+
+            // Optionally: on modal close, reset the form
+            $('#statusModal').on('hidden.bs.modal', function () {
+                $('#statusForm')[0].reset();
+            });
         });
     </script>
 }

@@ -2,7 +2,26 @@
 
 namespace AlphaMode.Models
 {
-    public enum OrderStatus { New = 0, Processing = 1, Completed = 2, Cancelled = 3 }
+    public enum OrderStatus
+    {
+        [Display(Name = "Нова")]
+        New = 0,
+
+        [Display(Name = "За доставка")]
+        OutForDelivery = 1,
+
+        [Display(Name = "Доставена")]
+        Delivered = 2,
+
+        [Display(Name = "Отказана")]
+        Refused = 3,
+
+        [Display(Name = "Върната")]
+        Returned = 4,
+
+        [Display(Name = "Анулирана")]
+        Cancelled = 5
+    }
 
     public class Order
     {
@@ -33,4 +52,7 @@ namespace AlphaMode.Models
         public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedUtc { get; set; }
     }
+
 }
+
+

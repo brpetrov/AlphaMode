@@ -37,5 +37,22 @@ namespace AlphaMode.Pages.Admin
             TempData["Success"] = $"Поръчка #{id} е изтрита.";
             return RedirectToPage();
         }
+
+        public async Task<IActionResult> OnPostUpdateStatusAsync(int id, OrderStatus status)
+        {
+            var order = await _db.Orders.FindAsync(id);
+            if (order == null)
+            {
+                TempData["Error"] = "Поръчката не бе намерена.";
+                return RedirectToPage();
+            }
+
+            order.Status = status;
+            order.UpdatedUtc = DateTime.UtcNow;
+            await _db.SaveChangesAsync();
+            TempData["Success"] = $"Статусът на поръчка #{id} е сменен.";
+            return RedirectToPage();
+        }
+
     }
 }

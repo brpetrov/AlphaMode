@@ -20,3 +20,45 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.star-rating {
+    display: inline-flex;
+    flex-direction: row-reverse; /* show 5 -> 1 left-to-right visually */
+    gap: .25rem;
+    align-items: center;
+    font-size: 1.6rem; /* change the size if you want bigger */
+    user-select: none;
+}
+
+    /* hide native radio inputs */
+    .star-rating input[type="radio"] {
+        display: none;
+    }
+
+    /* stars */
+    .star-rating label {
+        cursor: pointer;
+        color: #cfcfcf;
+        transition: transform .12s ease, color .12s ease;
+        display: inline-block;
+        line-height: 1;
+    }
+
+        /* hover and hovered-neighbours */
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            transform: scale(1.15);
+            color: #dc3545;
+        }
+
+    /* checked state: colour all labels after the checked input (due to row-reverse) */
+    .star-rating input[type="radio"]:checked ~ label {
+        color: #dc3545;
+    }
+
+    /* focus outline for keyboard users */
+    .star-rating input[type="radio"]:focus + label {
+        outline: 2px solid rgba(220,53,69,.25);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
