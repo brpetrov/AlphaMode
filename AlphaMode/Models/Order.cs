@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace AlphaMode.Models
 {
@@ -40,9 +41,20 @@ namespace AlphaMode.Models
         [Display(Name = "Дата на раждане"), DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
 
-        // Order
-        [Required, Display(Name = "Количество"), Range(1, 24)]
-        public int Quantity { get; set; } = 1;
+        //// Order
+        //[Required, Display(Name = "Количество"), Range(1, 3, ErrorMessage = "Можете да поръчате между 1 и 3 опаковки.")]
+        //public int Quantity { get; set; } = 1;
+
+        [Required]
+        public int BundleId { get; set; }
+
+        [ValidateNever]
+        public Bundle Bundle { get; set; } = default!;
+
+
+        [Display(Name = "Крайна цена")]
+        public decimal TotalPrice { get; set; }
+
 
         [Display(Name = "Промо код"), StringLength(30)]
         public string? PromoCode { get; set; }

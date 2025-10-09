@@ -19,6 +19,7 @@ namespace AlphaMode.Pages.Admin
         {
             Orders = await _db.Orders
                 .AsNoTracking()
+                .Include(o => o.Bundle)
                 .OrderByDescending(o => o.CreatedUtc)
                 .ToListAsync();
         }

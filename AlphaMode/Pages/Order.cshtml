@@ -39,9 +39,15 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label asp-for="Order.Quantity" class="form-label"></label>
-                    <input asp-for="Order.Quantity" type="number" class="form-control" />
-                    <span asp-validation-for="Order.Quantity" class="text-danger"></span>
+                    <label asp-for="Order.BundleId" class="form-label">Количество</label>
+                    <select asp-for="Order.BundleId" class="form-select" required>
+                        <option value="">Изберете пакет...</option>
+                        @foreach (var b in Model.Bundles)
+                        {
+                            <option value="@b.Id">@b.Name (@b.Size бр.) – @b.Price лв.</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Order.BundleId" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6">

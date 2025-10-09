@@ -20,6 +20,7 @@
                 <th class="text-center" style="width:90px;">
                     Количество
                 </th>
+                <th>Цена</th>
                 <th>Промо код</th>
                 <th>Дата</th>
                 <th>Статус</th>
@@ -34,7 +35,20 @@
                     <td>@o.FullName</td>
                     <td>@o.Telephone</td>
                     <td>@o.Address</td>
-                    <td class="text-center">@o.Quantity</td>
+                    <td class="text-center">
+                        @if (o.Bundle != null)
+                        {
+                            <span>
+                                @o.Bundle.Name
+                                
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">- липсва -</span>
+                        }
+                    </td>
+                    <td>@o.Bundle.Price</td>
                
                     <td>@o.PromoCode</td>
                     <td>@o.CreatedUtc.ToLocalTime()</td>

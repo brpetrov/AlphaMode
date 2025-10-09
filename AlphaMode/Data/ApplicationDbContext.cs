@@ -12,6 +12,7 @@ namespace AlphaMode.Data
         }
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<PromoCode> PromoCodes => Set<PromoCode>();
+        public DbSet<Bundle> Bundles => Set<Bundle>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -22,7 +23,13 @@ namespace AlphaMode.Data
 
             builder.Entity<PromoCode>()
            .HasIndex(p => p.Code)
-           .IsUnique(); 
+           .IsUnique();
+
+            builder.Entity<Bundle>().HasData(
+                new Bundle { Id = 1, Name = "1 опаковка", Size = 1, Price = 59m, IsActive = true },
+                new Bundle { Id = 2, Name = "2 опаковки", Size = 2, Price = 100m, IsActive = true },
+                new Bundle { Id = 3, Name = "3 опаковки", Size = 3, Price = 140m, IsActive = true }
+            );
         }
     }
 }
