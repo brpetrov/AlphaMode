@@ -19,6 +19,10 @@ builder.Services.AddRazorPages();
 
 //Custom services
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.Configure<AlphaMode.Services.EmailOptions>(
+    builder.Configuration.GetSection("Email"));
+builder.Services.AddScoped<AlphaMode.Services.IEmailSender, AlphaMode.Services.GmailEmailSender>();
+
 
 var app = builder.Build();
 

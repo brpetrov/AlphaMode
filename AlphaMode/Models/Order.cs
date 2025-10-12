@@ -38,14 +38,14 @@ namespace AlphaMode.Models
         [Required, Display(Name = "Телефон"), Phone, StringLength(30)]
         public string Telephone { get; set; } = default!;
 
-        [Display(Name = "Дата на раждане"), DataType(DataType.Date)]
+        [Required, Display(Name = "Дата на раждане"), DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
 
         //// Order
         //[Required, Display(Name = "Количество"), Range(1, 3, ErrorMessage = "Можете да поръчате между 1 и 3 опаковки.")]
         //public int Quantity { get; set; } = 1;
 
-        [Required]
+        [Required, Display(Name = "Пакет")]
         public int BundleId { get; set; }
 
         [ValidateNever]

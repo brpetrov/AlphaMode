@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace AlphaMode.Pages
 {
@@ -12,10 +13,16 @@ namespace AlphaMode.Pages
     {
         private readonly IOrderService _orders;
         private readonly ApplicationDbContext _db;
-        public OrderPageModel(IOrderService orders, ApplicationDbContext db)
+        private readonly IEmailSender _email;    
+        private readonly ILogger<OrderPageModel> _log;
+        [TempData] public string? OrderSummary { get; set; }
+
+        public OrderPageModel(IOrderService orders, ApplicationDbContext db, IEmailSender email, ILogger<OrderPageModel> log)
         {
             _orders = orders;
             _db = db;
+            _email = email;                   
+            _log = log;
         }
 
         [BindProperty]
@@ -32,71 +39,174 @@ namespace AlphaMode.Pages
                 .ToListAsync();
         }
 
+        public async Task<IActionResult> OnGetPromoAsync(string code, CancellationToken ct)
+        {
+            if (string.IsNullOrWhiteSpace(code))
+                return new JsonResult(new { valid = false, message = "Въведете промо код." });
+
+            var promo = await _db.PromoCodes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Code == code, ct);
+
+            if (promo == null || !promo.IsActive || promo.ValidUntilUtc < DateTime.UtcNow)
+                return new JsonResult(new { valid = false, message = "Промо кодът е невалиден или изтекъл." });
+
+            // Adjust property name if yours differs (e.g., DiscountPercent)
+            var percent = promo.DiscountPercent; // int or decimal 0..100
+            return new JsonResult(new { valid = true, percent });
+        }
+
         public async Task<IActionResult> OnPostAsync(CancellationToken ct)
         {
             try
             {
-                // Reload bundles in case of form error
+                // Reload bundles on post-back
                 Bundles = await _db.Bundles
                     .Where(b => b.IsActive && (b.Size == 1 || b.Size == 2 || b.Size == 3))
                     .OrderBy(b => b.Size)
-                    .ToListAsync();
-
-
+                    .ToListAsync(ct);
 
                 if (!ModelState.IsValid)
-                {
-                    // For debugging:
-                    var errors = ModelState.Where(x => x.Value.Errors.Count > 0)
-                        .Select(x => $"{x.Key}: {x.Value.Errors[0].ErrorMessage}")
-                        .ToList();
-                    // Set a breakpoint here or log errors to understand which field(s) are failing.
                     return Page();
-                }
 
-                // Get bundle info and price from DB
-                var bundle = await _db.Bundles.FindAsync(Order.BundleId);
+                // Get bundle/base price
+                var bundle = await _db.Bundles.FindAsync(new object?[] { Order.BundleId }, ct);
                 if (bundle == null || !bundle.IsActive)
                 {
                     ModelState.AddModelError("Order.BundleId", "Избраният пакет не е валиден.");
                     return Page();
                 }
 
-                Order.TotalPrice = bundle.Price;
+                var basePrice = bundle.Price;
 
+                // Promo handling
+                decimal discountPercent = 0m;
                 if (!string.IsNullOrWhiteSpace(Order.PromoCode))
                 {
                     var promo = await _db.PromoCodes
                         .AsNoTracking()
-                        .FirstOrDefaultAsync(p => p.Code == Order.PromoCode);
+                        .FirstOrDefaultAsync(p => p.Code == Order.PromoCode, ct);
 
-                    if (promo == null)
+                    if (promo == null || !promo.IsActive || promo.ValidUntilUtc < DateTime.UtcNow)
                     {
-                        ModelState.AddModelError("Order.PromoCode", "Промо кодът не е валиден.");
+                        ModelState.AddModelError("Order.PromoCode", "Промо кодът е невалиден или изтекъл.");
                         return Page();
                     }
 
-                    // Optionally, check if promo is expired or inactive:
-                    // if (!promo.IsActive || promo.ExpirationDate < DateTime.UtcNow)
-                    // {
-                    //     ModelState.AddModelError("Order.PromoCode", "Промо кодът е невалиден или изтекъл.");
-                    //     return Page();
-                    // }
-
-                    // Optionally: apply discount to TotalPrice here if promo code gives discount
+                    // Adjust property name if different
+                    discountPercent = Convert.ToDecimal(promo.DiscountPercent);
+                    if (discountPercent < 0m) discountPercent = 0m;
+                    if (discountPercent > 100m) discountPercent = 100m;
                 }
 
-                // Save order as usual
+                // Final price
+                var discountAmount = Math.Round(basePrice * (discountPercent / 100m), 2, MidpointRounding.AwayFromZero);
+                var finalTotal = Math.Max(0m, Math.Round(basePrice - discountAmount, 2, MidpointRounding.AwayFromZero));
+
+                // Persist final price
+                Order.TotalPrice = finalTotal;
+
+                // Save order
                 var id = await _orders.CreateAsync(Order, ct);
-                return RedirectToPage("/OrderSuccess", new { id });
+
+                // Build success view (for TempData + page)
+                var vm = new OrderSuccessView
+                {
+                    OrderId = id,
+                    FullName = Order.FullName,
+                    Telephone = Order.Telephone,
+                    Address = Order.Address,
+                    BundleName = bundle.Name,
+                    BasePrice = basePrice,
+                    DiscountPercent = discountPercent,
+                    DiscountAmount = discountAmount,
+                    FinalTotal = finalTotal,
+                    PromoCode = string.IsNullOrWhiteSpace(Order.PromoCode) ? null : Order.PromoCode,
+                    CreatedLocal = DateTime.UtcNow.ToLocalTime()
+                };
+
+                // Email (non-blocking)
+                try
+                {
+                    var hasDiscount = discountPercent > 0m;
+                    var promoDisplay = vm.PromoCode ?? "-";
+
+                    var html = $@"
+<!DOCTYPE html>
+<html lang=""bg"">
+<head>
+  <meta charset=""utf-8"">
+  <meta name=""viewport"" content=""width=device-width, initial-scale=1"">
+</head>
+<body style=""margin:0;background:#f6f7fb;padding:24px;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#111;"">
+  <div style=""max-width:640px;margin:0 auto;background:#ffffff;border-radius:12px;box-shadow:0 2px 12px rgba(17,24,39,.08);overflow:hidden;"">
+    <div style=""background:#111827;color:#ffffff;padding:16px 20px;"">
+      <h2 style=""margin:0;font-size:18px;font-weight:600;"">AlphaMode — Нова поръчка #{id}</h2>
+      <div style=""opacity:.8;font-size:12px;margin-top:2px;"">{vm.CreatedLocal:dd.MM.yyyy HH:mm}</div>
+    </div>
+
+    <div style=""padding:20px 20px 10px 20px;"">
+      <h3 style=""margin:0 0 10px 0;font-size:16px;font-weight:600;"">Данни за клиента</h3>
+      <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""width:100%;border-collapse:collapse;font-size:14px;"">
+        <tr><td style=""padding:6px 0;width:160px;color:#6b7280;"">Име</td><td style=""padding:6px 0;"">{vm.FullName}</td></tr>
+        <tr><td style=""padding:6px 0;color:#6b7280;"">Телефон</td><td style=""padding:6px 0;"">{vm.Telephone}</td></tr>
+        <tr><td style=""padding:6px 0;color:#6b7280;"">Адрес</td><td style=""padding:6px 0;"">{vm.Address}</td></tr>
+        <tr><td style=""padding:6px 0;color:#6b7280;"">Промо код</td><td style=""padding:6px 0;"">{promoDisplay}</td></tr>
+      </table>
+    </div>
+
+    <div style=""padding:10px 20px 20px 20px;"">
+      <h3 style=""margin:10px 0;font-size:16px;font-weight:600;"">Поръчка</h3>
+      <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""width:100%;border-collapse:collapse;font-size:14px;"">
+        <tr style=""border-bottom:1px solid #eee"">
+          <td style=""padding:8px 0;color:#6b7280;"">Пакет</td>
+          <td style=""padding:8px 0;text-align:right;"">{vm.BundleName}</td>
+        </tr>
+        <tr style=""border-bottom:1px solid #eee"">
+          <td style=""padding:8px 0;color:#6b7280;"">Цена (база)</td>
+          <td style=""padding:8px 0;text-align:right;"">{vm.BasePrice:0.00} лв</td>
+        </tr>
+        {(hasDiscount ? $@"
+        <tr style=""border-bottom:1px solid #eee"">
+          <td style=""padding:8px 0;color:#059669;font-weight:600;"">Отстъпка ({vm.DiscountPercent:0.##}%)</td>
+          <td style=""padding:8px 0;text-align:right;color:#059669;font-weight:600;"">- {vm.DiscountAmount:0.00} лв</td>
+        </tr>" : "")}
+        <tr>
+          <td style=""padding:12px 0;font-size:16px;font-weight:700;"">Крайна цена</td>
+          <td style=""padding:12px 0;text-align:right;font-size:16px;font-weight:700;"">{vm.FinalTotal:0.00} лв</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style=""background:#f9fafb;color:#6b7280;padding:14px 20px;font-size:12px"">
+      Този имейл е генериран автоматично от AlphaMode уебсайта при нова поръчка.
+    </div>
+  </div>
+</body>
+</html>";
+
+                    await _email.SendAsync(
+                        subject: $"AlphaMode — Нова поръчка #{id}",
+                        htmlBody: html,
+                        toAddress: "alphamodebusiness@gmail.com"
+                    );
+                }
+                catch (Exception ex)
+                {
+                    _log.LogError(ex, "Failed to send order email for order {OrderId}", id);
+                }
+
+                // Put one-time summary in TempData and redirect WITHOUT id
+                OrderSummary = JsonSerializer.Serialize(vm);
+                return RedirectToPage("/OrderSuccess");
             }
-            catch (Exception ex)
+            catch
             {
                 ModelState.AddModelError(string.Empty, "Възникна грешка при обработката на поръчката. Моля, опитайте отново.");
                 return Page();
-                // Log the exception (ex) as needed
             }
-           
         }
     }
+
+
 }

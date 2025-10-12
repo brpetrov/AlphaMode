@@ -1,6 +1,5 @@
 ﻿@page
 @model AlphaMode.Pages.OrderPageModel
-
 @{
     Layout = "_PublicLayout";
     ViewData["Title"] = "Поръчка";
@@ -9,8 +8,6 @@
 <section class="py-5">
     <div class="container" style="max-width: 820px;">
         <h1 class="mb-4 text-center">Поръчка</h1>
-
-        @* <partial name="_ValidationSummary" /> *@
 
         <form method="post">
             <div class="row g-3">
@@ -40,11 +37,11 @@
 
                 <div class="col-md-6">
                     <label asp-for="Order.BundleId" class="form-label">Количество</label>
-                    <select asp-for="Order.BundleId" class="form-select" required>
+                    <select asp-for="Order.BundleId" class="form-select" required id="bundleSelect">
                         <option value="">Изберете пакет...</option>
                         @foreach (var b in Model.Bundles)
                         {
-                            <option value="@b.Id">@b.Name (@b.Size бр.) – @b.Price лв.</option>
+                            <option value="@b.Id" data-price="@b.Price">@b.Name (@b.Size бр.) – @b.Price лв.</option>
                         }
                     </select>
                     <span asp-validation-for="Order.BundleId" class="text-danger"></span>
@@ -52,8 +49,26 @@
 
                 <div class="col-md-6">
                     <label asp-for="Order.PromoCode" class="form-label"></label>
-                    <input asp-for="Order.PromoCode" class="form-control" />
+                    <input asp-for="Order.PromoCode" class="form-control" id="promoInput" />
+                    <div id="promoFeedback" class="form-text"></div>
                     <span asp-validation-for="Order.PromoCode" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Price summary -->
+            <div class="mt-4 p-3 border rounded bg-light">
+                <div class="d-flex justify-content-between">
+                    <span>Цена на пакет:</span>
+                    <strong><span id="basePrice">0.00</span> лв</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Отстъпка (<span id="discountPercent">0</span>%)</span>
+                    <strong>- <span id="discountAmount">0.00</span> лв</strong>
+                </div>
+                <hr class="my-2" />
+                <div class="d-flex justify-content-between fs-5">
+                    <span>Крайна цена:</span>
+                    <strong><span id="finalTotal">0.00</span> лв</strong>
                 </div>
             </div>
 
@@ -66,4 +81,83 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+          const bundleSelect = document.getElementById('bundleSelect');
+          const promoInput = document.getElementById('promoInput');
+          const promoFeedback = document.getElementById('promoFeedback');
+
+          const basePriceEl = document.getElementById('basePrice');
+          const discountPercentEl = document.getElementById('discountPercent');
+          const discountAmountEl = document.getElementById('discountAmount');
+          const finalTotalEl = document.getElementById('finalTotal');
+
+          let currentPercent = 0;
+
+          function getSelectedPrice() {
+            const opt = bundleSelect.options[bundleSelect.selectedIndex];
+            if (!opt || !opt.dataset.price) return 0;
+            return parseFloat(opt.dataset.price.replace(',', '.')) || 0;
+          }
+
+          function formatMoney(n) {
+            return (Math.round(n * 100) / 100).toFixed(2);
+          }
+
+          function recalc() {
+            const base = getSelectedPrice();
+            const discount = base * (currentPercent / 100);
+            const total = Math.max(0, base - discount);
+
+            basePriceEl.textContent = formatMoney(base);
+            discountPercentEl.textContent = currentPercent.toString();
+            discountAmountEl.textContent = formatMoney(discount);
+            finalTotalEl.textContent = formatMoney(total);
+          }
+
+          async function validatePromo() {
+            const code = promoInput.value.trim();
+            currentPercent = 0;
+            promoFeedback.textContent = '';
+            promoFeedback.className = 'form-text';
+
+            if (!code) { recalc(); return; }
+
+            try {
+              // calls OnGetPromoAsync handler: /Order?handler=Promo&code=XXX
+              const url = `@Url.Page("/Order", null, new { handler = "Promo" }, null)&code=${encodeURIComponent(code)}`;
+              const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+              if (!res.ok) throw new Error('network');
+
+              const data = await res.json();
+              if (data.valid) {
+                currentPercent = data.percent;
+                promoFeedback.textContent = `Промо кодът е активен: -${data.percent}%`;
+                promoFeedback.className = 'form-text text-success';
+              } else {
+                promoFeedback.textContent = data.message || 'Невалиден промо код.';
+                promoFeedback.className = 'form-text text-danger';
+              }
+            } catch {
+              promoFeedback.textContent = 'Възникна проблем при проверката на кода.';
+              promoFeedback.className = 'form-text text-danger';
+            } finally {
+              recalc();
+            }
+          }
+
+          bundleSelect?.addEventListener('change', recalc);
+
+          // Validate promo on blur and when user stops typing (debounce)
+          let debounce;
+          promoInput?.addEventListener('input', () => {
+            clearTimeout(debounce);
+            debounce = setTimeout(validatePromo, 400);
+          });
+          promoInput?.addEventListener('blur', validatePromo);
+
+          // initial calc
+          recalc();
+        })();
+    </script>
 }
