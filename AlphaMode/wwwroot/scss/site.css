@@ -8,6 +8,16 @@ html, body {
   background: #f4f6fb;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
 .am-header {
   padding: 1.25rem 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
