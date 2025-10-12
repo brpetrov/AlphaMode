@@ -25,6 +25,9 @@ namespace AlphaMode.Pages.Admin
             [Required, StringLength(30)]
             public string Code { get; set; } = default!;
 
+            [Required]
+            public int Percentage { get; set; } = 10;
+
             [Display(Name = "Валиден до"), DataType(DataType.Date)]
             public DateTime? ValidUntil { get; set; }
         }
@@ -57,6 +60,7 @@ namespace AlphaMode.Pages.Admin
             _db.PromoCodes.Add(new PromoCode
             {
                 Code = code,
+                DiscountPercent= Input.Percentage,
                 ValidUntilUtc = Input.ValidUntil?.Date,   // store midnight UTC
                 IsActive = true
             });

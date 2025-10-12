@@ -10,10 +10,10 @@ namespace AlphaMode.Models
         public string Name { get; set; } = "";
 
         [Range(1, 100)]
-        public int Size { get; set; } // Number of bottles
+        public int Size { get; set; }
 
-        [Range(0, 9999)]
-        public decimal Price { get; set; } // Bundle price
+        [Range(typeof(decimal), "0", "9999")]
+        public decimal Price { get; set; }
 
         public bool IsActive { get; set; } = true;
     }

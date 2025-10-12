@@ -1,0 +1,110 @@
+﻿@page
+@model AlphaMode.Pages.Admin.BundlesModel
+@{
+    ViewData["Title"] = "Пакети";
+}
+
+<h1 class="mb-4 fw-semibold"><i class="bi bi-box2-heart"></i> Пакети (Bundles)</h1>
+
+<partial name="_ValidationSummary" />
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light text-nowrap text-center">
+            <tr>
+                <th>Име</th>
+                <th>Брой</th>
+                <th>Цена (лв.)</th>
+                <th>Активен?</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in Model.Bundles)
+            {
+                <tr class="text-center">
+                    <td class="fw-semibold">@b.Name</td>
+                    <td>@b.Size</td>
+                    <td>@b.Price.ToString("0.00")</td>
+                    <td>
+                        @if (b.IsActive)
+                        {
+                            <span class="text-success"><i class="bi bi-check-circle-fill"></i></span>
+                        }
+                        else
+                        {
+                            <span class="text-danger"><i class="bi bi-x-circle-fill"></i></span>
+                        }
+                    </td>
+                    <td>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editModal-@b.Id">
+                            <i class="bi bi-pencil"></i> Редакция
+                        </button>
+
+                        <!-- Edit modal -->
+                        <div class="modal fade" id="editModal-@b.Id" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="post" asp-page-handler="Edit">
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden" name="editId" value="@b.Id" />
+
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Редакция на пакет</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <div class="modal-body row g-3">
+                                            <div class="col-md-12">
+                                                <label class="form-label">Име</label>
+                                                <input name="editInput.Name" class="form-control" value="@b.Name" required />
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label">Брой</label>
+                                                <input name="editInput.Size" type="number" min="1" max="100" class="form-control" value="@b.Size" required />
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="form-label">Цена (лв.)</label>
+                                                <input name="editInput.Price" type="number" step="0.01" min="0" max="9999" class="form-control" value="@b.Price" required />
+                                            </div>
+
+                                            <div class="col-12">
+                                                <div class="form-check mt-2">
+                                                    <!-- CHECKBOX FIRST -->
+                                                    <input type="checkbox"
+                                                           name="editInput.IsActive"
+                                                           class="form-check-input"
+                                                           value="true"
+                                                           @(b.IsActive ? "checked" : "") />
+                                                    <label class="form-check-label">Активен</label>
+                                                </div>
+                                                <!-- HIDDEN FALLBACK AFTER CHECKBOX -->
+                                                <input type="hidden" name="editInput.IsActive" value="false" />
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отказ</button>
+                                            <button type="submit" class="btn btn-primary">Запази</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

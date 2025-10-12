@@ -8,7 +8,7 @@
 
 <!-- Add-new form -->
 <form method="post" class="row g-3 mb-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label asp-for="Input.Code" class="form-label fw-semibold">
             <i class="bi bi-tag-fill"></i> Код
         </label>
@@ -16,14 +16,22 @@
         <span asp-validation-for="Input.Code" class="text-danger small"></span>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <label asp-for="Input.Percentage" class="form-label fw-semibold">
+            <i class="bi bi-percent"></i> Процент
+        </label>
+        <input asp-for="Input.Percentage" class="form-control" />
+        <span asp-validation-for="Input.Percentage" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-3">
         <label asp-for="Input.ValidUntil" class="form-label fw-semibold">
             <i class="bi bi-calendar-date"></i> Валиден до
         </label>
         <input asp-for="Input.ValidUntil" class="form-control" />
     </div>
 
-    <div class="col-md-4 d-flex align-items-end">
+    <div class="col-md-3 d-flex align-items-end">
         <button class="btn btn-dark px-4" type="submit">
             <i class="bi bi-plus-circle me-1"></i> Добави
         </button>
@@ -35,11 +43,12 @@
 <!-- List table -->
 <div class="table-responsive">
     <table class="table table-bordered table-hover align-middle">
-        <thead class="table-light text-nowrap">
+        <thead class="table-light text-nowrap text-center">
             <tr>
                 <th><i class="bi bi-tag"></i> Код</th>
+                <th><i class="bi bi-percent"></i> Процент</th>
                 <th><i class="bi bi-calendar-event"></i> Валиден до</th>
-                <th class="text-center"><i class="bi bi-check2-circle"></i> Активен?</th>
+                <th><i class="bi bi-check2-circle"></i> Активен?</th>
                 <th><i class="bi bi-clock-history"></i> Създаден</th>
             </tr>
         </thead>
@@ -50,9 +59,9 @@
                 var expired = p.ValidUntilUtc != null && p.ValidUntilUtc < DateTime.UtcNow;
                 var active = p.IsActive && !expired;
 
-                <tr class="@(expired ? "table-danger" : "")">
+                <tr class="@(expired ? "table-danger" : "") text-center">
                     <td class="fw-semibold">@p.Code</td>
-
+                    <td class="fw-semibold">@p.DiscountPercent</td>
                     <td>
                         @if (p.ValidUntilUtc == null)
                         {

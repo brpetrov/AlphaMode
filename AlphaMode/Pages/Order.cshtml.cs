@@ -42,6 +42,8 @@ namespace AlphaMode.Pages
                     .OrderBy(b => b.Size)
                     .ToListAsync();
 
+
+
                 if (!ModelState.IsValid)
                 {
                     // For debugging:
@@ -61,6 +63,28 @@ namespace AlphaMode.Pages
                 }
 
                 Order.TotalPrice = bundle.Price;
+
+                if (!string.IsNullOrWhiteSpace(Order.PromoCode))
+                {
+                    var promo = await _db.PromoCodes
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync(p => p.Code == Order.PromoCode);
+
+                    if (promo == null)
+                    {
+                        ModelState.AddModelError("Order.PromoCode", "Промо кодът не е валиден.");
+                        return Page();
+                    }
+
+                    // Optionally, check if promo is expired or inactive:
+                    // if (!promo.IsActive || promo.ExpirationDate < DateTime.UtcNow)
+                    // {
+                    //     ModelState.AddModelError("Order.PromoCode", "Промо кодът е невалиден или изтекъл.");
+                    //     return Page();
+                    // }
+
+                    // Optionally: apply discount to TotalPrice here if promo code gives discount
+                }
 
                 // Save order as usual
                 var id = await _orders.CreateAsync(Order, ct);
