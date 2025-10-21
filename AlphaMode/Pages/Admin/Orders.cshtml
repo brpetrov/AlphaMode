@@ -9,6 +9,7 @@
 
 <h1 class="mb-4 fw-semibold"><i class="bi bi-box-seam"></i> Всички поръчки</h1>
 
+
 <div class="table-responsive">
     <table id="ordersTable" class="table table-hover table-bordered align-middle">
         <thead class="table-light text-nowrap">
@@ -31,7 +32,9 @@
             @foreach (var o in Model.Orders)
             {
                 <tr>
-                    <td>@o.Id</td>
+                    <td>
+                        <a asp-page="/Admin/OrderDetail" asp-route-id="@o.Id" class="text-decoration-underline">#@o.Id</a>
+                    </td>
                     <td>@o.FullName</td>
                     <td>@o.Telephone</td>
                     <td>@o.Address</td>
@@ -48,12 +51,15 @@
                             <span class="text-danger">- липсва -</span>
                         }
                     </td>
-                    <td>@o.Bundle.Price</td>
+                    <td class="text-end">
+                        @o.TotalPrice.ToString("0.00") лв
+                    </td>
                
                     <td>@o.PromoCode</td>
                     <td>@o.CreatedUtc.ToLocalTime()</td>
                     <td>
-                        <a href="#" class="order-status-link text-decoration-underline"
+                        <a href="#"
+                           class="order-status-link badge @AlphaMode.Pages.Admin.OrdersModel.StatusBadgeClass(o.Status) text-decoration-none"
                            data-id="@o.Id"
                            data-status="@((int)o.Status)">
                             @DisplayHelper.GetEnumDisplayName(o.Status)
@@ -139,44 +145,139 @@
 @section Scripts {
     <script>
         $(function () {
+          const COL = { ID:0, NAME:1, PHONE:2, ADDRESS:3, BUNDLE:4, PRICE:5, PROMO:6, DATE:7, STATUS:8, ACTIONS:9 };
 
-            // DataTables
-            $('#ordersTable').DataTable({
-                order: [[0, 'desc']],
-                pageLength: 25,
-               
-            });
+          // Clone header to create filter row
+          $('#ordersTable thead tr')
+            .clone(false)               // no need to clone events
+            .addClass('filters')
+            .appendTo('#ordersTable thead');
 
-            // delete click
-            $('.js-delete').on('click', function () {
-                $('#del-id').val($(this).data('id'));
-                $('#del-name').text('#' + $(this).data('id') + ' (' + $(this).data('name') + ')');
-                new bootstrap.Modal('#delModal').show();
-            });
+          const table = $('#ordersTable').DataTable({
+            order: [[COL.ID, 'desc']],
+            pageLength: 25,
+            orderCellsTop: true,        // <— sort handlers on the TOP header row only
+            initComplete: function () {
+              const api = this.api();
 
-            // toast
-            const toast = document.getElementById('snackbar');
-            if (toast) new bootstrap.Toast(toast, { delay: 3000 }).show();
-        });
+              api.columns().every(function (colIdx) {
+                const th = $('.filters th').eq(colIdx).empty();
 
+                // choose which columns get which control
+                if ([COL.ID, COL.ACTIONS].includes(colIdx)) return; // no filter
 
-                $(function () {
-            // ... (your other code)
+         // STATUS as <select> with unique values (strip HTML, dedupe, sort) + exact-match custom filter
+        if (colIdx === COL.STATUS) {
+          const select = $('<select class="form-select form-select-sm"><option value="">Всички</option></select>')
+            .appendTo(th);
 
-            // Click status link: open modal and fill values
-            $('.order-status-link').on('click', function (e) {
-                e.preventDefault();
-                const orderId = $(this).data('id');
-                const currentStatus = $(this).data('status');
-                $('#status-order-id').val(orderId);
-                $('#status-dropdown').val(currentStatus);
-                new bootstrap.Modal('#statusModal').show();
-            });
+          // Collect unique display texts
+          const seen = new Map(); // key = lowercase, value = original text
+          api.column(colIdx).data().each(function (d) {
+            const text = $('<div>').html(d).text().trim(); // strip badge markup
+            if (!text) return;
+            const key = text.toLowerCase();
+            if (!seen.has(key)) seen.set(key, text);
+          });
 
-            // Optionally: on modal close, reset the form
-            $('#statusModal').on('hidden.bs.modal', function () {
-                $('#statusForm')[0].reset();
-            });
+          [...seen.values()].sort((a, b) => a.localeCompare(b, 'bg'))
+            .forEach(txt => select.append('<option value="' + txt + '">' + txt + '</option>'));
+
+          // Register ONE custom status filter that checks the visible text of the status cell
+          let statusFilterFn = function (settings, data, dataIndex) {
+            if (settings.nTable !== api.table().node()) return true; // only this table
+            const wanted = select.val();
+            if (!wanted) return true;
+            const cellText = $(api.row(dataIndex).node()).find('td').eq(COL.STATUS).text().trim();
+            return cellText === wanted;
+          };
+
+          // Make sure we don't stack multiple filters if initComplete re-runs
+          if (!$.fn.dataTable._alphaStatusFilterAdded) {
+            $.fn.dataTable.ext.search.push(statusFilterFn);
+            $.fn.dataTable._alphaStatusFilterAdded = true;
+          }
+
+          select.on('change', function () {
+            api.draw();
+          });
+
+          return;
+        }
+
+                // PROMO as text input
+                if (colIdx === COL.PROMO) {
+                  $('<input type="text" class="form-control form-control-sm" placeholder="Промо..." />')
+                    .appendTo(th)
+                    .on('keyup change', function () {
+                      api.column(colIdx).search(this.value).draw();
+                    });
+                  return;
+                }
+
+                // DATE as month filter (yyyy-MM) using data-order (ISO) underneath
+                if (colIdx === COL.DATE) {
+                  let monthFilterFn = null; // keep a handle to remove old filter
+
+                  $('<input type="month" class="form-control form-control-sm" />')
+                    .appendTo(th)
+                    .on('change', function () {
+                      const val = this.value; // yyyy-MM
+
+                      // Remove previous filter (if any)
+                      if (monthFilterFn) {
+                        const idx = $.fn.dataTable.ext.search.indexOf(monthFilterFn);
+                        if (idx !== -1) $.fn.dataTable.ext.search.splice(idx, 1);
+                        monthFilterFn = null;
+                      }
+
+                      if (val) {
+                        monthFilterFn = function (settings, data, dataIndex) {
+                          if (settings.nTable !== api.table().node()) return true;
+                          const orderVal = api.row(dataIndex).nodes().to$().find('td').eq(COL.DATE).attr('data-order') || '';
+                          return orderVal.startsWith(val); // expects data-order="yyyy-MM-ddTHH:mm:ss..."
+                        };
+                        $.fn.dataTable.ext.search.push(monthFilterFn);
+                      }
+
+                      api.draw();
+                    });
+                  return;
+                }
+
+                // Generic text input for other columns
+                $('<input type="text" class="form-control form-control-sm" placeholder="Търси..." />')
+                  .appendTo(th)
+                  .on('keyup change', function () {
+                    api.column(colIdx).search(this.value).draw();
+                  });
+              });
+            }
+          });
+
+          // Stop clicks in filter inputs from bubbling to TH (which would toggle sort)
+          $('#ordersTable thead').on('click.dt mousedown.dt dblclick.dt', '.filters input, .filters select', function (e) {
+            e.stopPropagation();
+          });
+
+          // Delete modal
+          $('.js-delete').on('click', function () {
+            $('#del-id').val($(this).data('id'));
+            $('#del-name').text('#' + $(this).data('id') + ' (' + $(this).data('name') + ')');
+            new bootstrap.Modal('#delModal').show();
+          });
+
+          // Status modal
+          $('.order-status-link').on('click', function (e) {
+            e.preventDefault();
+            $('#status-order-id').val($(this).data('id'));
+            $('#status-dropdown').val($(this).data('status'));
+            new bootstrap.Modal('#statusModal').show();
+          });
+
+          // Toast
+          const toastEl = document.getElementById('snackbar');
+          if (toastEl) new bootstrap.Toast(toastEl, { delay: 3000 }).show();
         });
     </script>
 }

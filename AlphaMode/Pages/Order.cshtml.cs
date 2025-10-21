@@ -15,6 +15,7 @@ namespace AlphaMode.Pages
         private readonly ApplicationDbContext _db;
         private readonly IEmailSender _email;    
         private readonly ILogger<OrderPageModel> _log;
+
         [TempData] public string? OrderSummary { get; set; }
 
         public OrderPageModel(IOrderService orders, ApplicationDbContext db, IEmailSender email, ILogger<OrderPageModel> log)
@@ -28,15 +29,27 @@ namespace AlphaMode.Pages
         [BindProperty]
         public Order Order { get; set; } = new();
 
+        [BindProperty(SupportsGet = true)]
+        public int? SelectedBundleId { get; set; }
+
         // List of available bundles (for dropdown)
         public List<Bundle> Bundles { get; set; } = new();
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? bundleId)
         {
             Bundles = await _db.Bundles
-                .Where(b => b.IsActive && (b.Size == 1 || b.Size == 2 || b.Size == 3))
+                .Where(b => b.IsActive)
                 .OrderBy(b => b.Size)
                 .ToListAsync();
+
+            if (bundleId.HasValue)
+            {
+                var exists = Bundles.Any(b => b.Id == bundleId.Value);
+                if (exists)
+                {
+                    Order.BundleId = bundleId.Value; // <-- this is what the <select> should reflect
+                }
+            }
         }
 
         public async Task<IActionResult> OnGetPromoAsync(string code, CancellationToken ct)
@@ -132,58 +145,58 @@ namespace AlphaMode.Pages
                     var promoDisplay = vm.PromoCode ?? "-";
 
                     var html = $@"
-<!DOCTYPE html>
-<html lang=""bg"">
-<head>
-  <meta charset=""utf-8"">
-  <meta name=""viewport"" content=""width=device-width, initial-scale=1"">
-</head>
-<body style=""margin:0;background:#f6f7fb;padding:24px;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#111;"">
-  <div style=""max-width:640px;margin:0 auto;background:#ffffff;border-radius:12px;box-shadow:0 2px 12px rgba(17,24,39,.08);overflow:hidden;"">
-    <div style=""background:#111827;color:#ffffff;padding:16px 20px;"">
-      <h2 style=""margin:0;font-size:18px;font-weight:600;"">AlphaMode — Нова поръчка #{id}</h2>
-      <div style=""opacity:.8;font-size:12px;margin-top:2px;"">{vm.CreatedLocal:dd.MM.yyyy HH:mm}</div>
-    </div>
+                                <!DOCTYPE html>
+                                <html lang=""bg"">
+                                <head>
+                                  <meta charset=""utf-8"">
+                                  <meta name=""viewport"" content=""width=device-width, initial-scale=1"">
+                                </head>
+                                <body style=""margin:0;background:#f6f7fb;padding:24px;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#111;"">
+                                  <div style=""max-width:640px;margin:0 auto;background:#ffffff;border-radius:12px;box-shadow:0 2px 12px rgba(17,24,39,.08);overflow:hidden;"">
+                                    <div style=""background:#111827;color:#ffffff;padding:16px 20px;"">
+                                      <h2 style=""margin:0;font-size:18px;font-weight:600;"">AlphaMode — Нова поръчка #{id}</h2>
+                                      <div style=""opacity:.8;font-size:12px;margin-top:2px;"">{vm.CreatedLocal:dd.MM.yyyy HH:mm}</div>
+                                    </div>
 
-    <div style=""padding:20px 20px 10px 20px;"">
-      <h3 style=""margin:0 0 10px 0;font-size:16px;font-weight:600;"">Данни за клиента</h3>
-      <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""width:100%;border-collapse:collapse;font-size:14px;"">
-        <tr><td style=""padding:6px 0;width:160px;color:#6b7280;"">Име</td><td style=""padding:6px 0;"">{vm.FullName}</td></tr>
-        <tr><td style=""padding:6px 0;color:#6b7280;"">Телефон</td><td style=""padding:6px 0;"">{vm.Telephone}</td></tr>
-        <tr><td style=""padding:6px 0;color:#6b7280;"">Адрес</td><td style=""padding:6px 0;"">{vm.Address}</td></tr>
-        <tr><td style=""padding:6px 0;color:#6b7280;"">Промо код</td><td style=""padding:6px 0;"">{promoDisplay}</td></tr>
-      </table>
-    </div>
+                                    <div style=""padding:20px 20px 10px 20px;"">
+                                      <h3 style=""margin:0 0 10px 0;font-size:16px;font-weight:600;"">Данни за клиента</h3>
+                                      <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""width:100%;border-collapse:collapse;font-size:14px;"">
+                                        <tr><td style=""padding:6px 0;width:160px;color:#6b7280;"">Име</td><td style=""padding:6px 0;"">{vm.FullName}</td></tr>
+                                        <tr><td style=""padding:6px 0;color:#6b7280;"">Телефон</td><td style=""padding:6px 0;"">{vm.Telephone}</td></tr>
+                                        <tr><td style=""padding:6px 0;color:#6b7280;"">Адрес</td><td style=""padding:6px 0;"">{vm.Address}</td></tr>
+                                        <tr><td style=""padding:6px 0;color:#6b7280;"">Промо код</td><td style=""padding:6px 0;"">{promoDisplay}</td></tr>
+                                      </table>
+                                    </div>
 
-    <div style=""padding:10px 20px 20px 20px;"">
-      <h3 style=""margin:10px 0;font-size:16px;font-weight:600;"">Поръчка</h3>
-      <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""width:100%;border-collapse:collapse;font-size:14px;"">
-        <tr style=""border-bottom:1px solid #eee"">
-          <td style=""padding:8px 0;color:#6b7280;"">Пакет</td>
-          <td style=""padding:8px 0;text-align:right;"">{vm.BundleName}</td>
-        </tr>
-        <tr style=""border-bottom:1px solid #eee"">
-          <td style=""padding:8px 0;color:#6b7280;"">Цена (база)</td>
-          <td style=""padding:8px 0;text-align:right;"">{vm.BasePrice:0.00} лв</td>
-        </tr>
-        {(hasDiscount ? $@"
-        <tr style=""border-bottom:1px solid #eee"">
-          <td style=""padding:8px 0;color:#059669;font-weight:600;"">Отстъпка ({vm.DiscountPercent:0.##}%)</td>
-          <td style=""padding:8px 0;text-align:right;color:#059669;font-weight:600;"">- {vm.DiscountAmount:0.00} лв</td>
-        </tr>" : "")}
-        <tr>
-          <td style=""padding:12px 0;font-size:16px;font-weight:700;"">Крайна цена</td>
-          <td style=""padding:12px 0;text-align:right;font-size:16px;font-weight:700;"">{vm.FinalTotal:0.00} лв</td>
-        </tr>
-      </table>
-    </div>
+                                    <div style=""padding:10px 20px 20px 20px;"">
+                                      <h3 style=""margin:10px 0;font-size:16px;font-weight:600;"">Поръчка</h3>
+                                      <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""width:100%;border-collapse:collapse;font-size:14px;"">
+                                        <tr style=""border-bottom:1px solid #eee"">
+                                          <td style=""padding:8px 0;color:#6b7280;"">Пакет</td>
+                                          <td style=""padding:8px 0;text-align:right;"">{vm.BundleName}</td>
+                                        </tr>
+                                        <tr style=""border-bottom:1px solid #eee"">
+                                          <td style=""padding:8px 0;color:#6b7280;"">Цена (база)</td>
+                                          <td style=""padding:8px 0;text-align:right;"">{vm.BasePrice:0.00} лв</td>
+                                        </tr>
+                                        {(hasDiscount ? $@"
+                                        <tr style=""border-bottom:1px solid #eee"">
+                                          <td style=""padding:8px 0;color:#059669;font-weight:600;"">Отстъпка ({vm.DiscountPercent:0.##}%)</td>
+                                          <td style=""padding:8px 0;text-align:right;color:#059669;font-weight:600;"">- {vm.DiscountAmount:0.00} лв</td>
+                                        </tr>" : "")}
+                                        <tr>
+                                          <td style=""padding:12px 0;font-size:16px;font-weight:700;"">Крайна цена</td>
+                                          <td style=""padding:12px 0;text-align:right;font-size:16px;font-weight:700;"">{vm.FinalTotal:0.00} лв</td>
+                                        </tr>
+                                      </table>
+                                    </div>
 
-    <div style=""background:#f9fafb;color:#6b7280;padding:14px 20px;font-size:12px"">
-      Този имейл е генериран автоматично от AlphaMode уебсайта при нова поръчка.
-    </div>
-  </div>
-</body>
-</html>";
+                                    <div style=""background:#f9fafb;color:#6b7280;padding:14px 20px;font-size:12px"">
+                                      Този имейл е генериран автоматично от AlphaMode уебсайта при нова поръчка.
+                                    </div>
+                                  </div>
+                                </body>
+                                </html>";
 
                     await _email.SendAsync(
                         subject: $"AlphaMode — Нова поръчка #{id}",

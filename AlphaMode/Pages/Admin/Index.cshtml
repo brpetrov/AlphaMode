@@ -1,6 +1,133 @@
 ﻿@page
 @model AlphaMode.Pages.Admin.IndexModel
+@using AlphaMode.Helpers
+@using AlphaMode.Models
 @{
+    ViewData["Title"] = "Админ — Табло";
 }
 
-<h1>Test</h1>
+<h1 class="h3 mb-0"><i class="bi bi-speedometer2"></i> Табло</h1>
+
+<div class="d-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex gap-2">
+        <a asp-page="/Admin/Orders" class="btn btn-outline-dark"><i class="bi bi-box-seam"></i> Поръчки</a>
+        <a asp-page="/Admin/Bundles" class="btn btn-outline-dark"><i class="bi bi-collection"></i> Пакети</a>
+        <a asp-page="/Admin/PromoCodes" class="btn btn-outline-dark"><i class="bi bi-ticket-perforated"></i> Промо кодове</a>
+        <a asp-page="/Admin/Reports/Promo" class="btn btn-outline-dark"><i class="bi bi-graph-up"></i> Отчети</a>
+    </div>
+</div>
+
+@if (TempData["Success"] is string ok && !string.IsNullOrEmpty(ok))
+{
+    <div class="alert alert-success">@ok</div>
+}
+
+<!-- KPIs -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Поръчки (днес)</div>
+                <div class="display-6 fw-semibold">@Model.Kpi.TodayOrders</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Оборот (този месец)</div>
+                <div class="display-6 fw-semibold">@Model.Kpi.MonthRevenue.ToString("0.00") лв</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Нови за обработка</div>
+                <div class="display-6 fw-semibold">@Model.Kpi.NewCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="text-muted small">Доставени (месец)</div>
+                <div class="display-6 fw-semibold">@Model.Kpi.DeliveredThisMonth</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status breakdown -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h5 m-0">Статуси (последни 30 дни)</h2>
+            <a asp-page="/Admin/Orders" class="btn btn-sm btn-outline-primary">Към всички поръчки</a>
+        </div>
+
+        <div class="row g-2">
+            @foreach (var s in Model.StatusCounts)
+            {
+                <div class="col-6 col-md-4 col-xl-2">
+                    <div class="d-flex align-items-center justify-content-between border rounded p-2">
+                        <span class="badge @AlphaMode.Pages.Admin.IndexModel.StatusBadgeClass(s.Status)">@DisplayHelper.GetEnumDisplayName(s.Status)</span>
+                        <span class="fw-semibold">@s.Count</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Recent orders -->
+<div class="card">
+    <div class="card-body">
+        <h2 class="h5 mb-3">Последни поръчки</h2>
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>№</th>
+                        <th>Клиент</th>
+                        <th>Телефон</th>
+                        <th>Пакет</th>
+                        <th class="text-end">Крайна цена</th>
+                        <th>Промо</th>
+                        <th>Дата</th>
+                        <th>Статус</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var o in Model.Recent)
+                    {
+                        <tr>
+                            <td><a asp-page="/Admin/OrderDetail" asp-route-id="@o.Id" class="text-decoration-underline">#@o.Id</a></td>
+                            <td>@o.FullName</td>
+                            <td>@o.Telephone</td>
+                            <td>@(o.Bundle != null ? o.Bundle.Name : "-")</td>
+                            <td class="text-end">@o.TotalPrice.ToString("0.00") лв</td>
+                            <td>@(string.IsNullOrWhiteSpace(o.PromoCode) ? "-" : o.PromoCode)</td>
+                            <td>@o.CreatedUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>
+                                <span class="badge @AlphaMode.Pages.Admin.IndexModel.StatusBadgeClass(o.Status)">
+                                    @DisplayHelper.GetEnumDisplayName(o.Status)
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <a asp-page="/Admin/OrderDetail" asp-route-id="@o.Id" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-end">
+            <a asp-page="/Admin/Orders" class="btn btn-sm btn-outline-primary">Виж всички</a>
+        </div>
+    </div>
+</div>

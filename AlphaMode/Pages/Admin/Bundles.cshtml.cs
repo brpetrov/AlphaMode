@@ -28,6 +28,7 @@ namespace AlphaMode.Pages.Admin
             public decimal Price { get; set; }
 
             public bool IsActive { get; set; }
+            public bool FrontDisplay { get; set; } = false;
         }
 
         public async Task OnGetAsync()
@@ -38,16 +39,9 @@ namespace AlphaMode.Pages.Admin
                 .ToListAsync();
         }
 
-        public async Task<IActionResult> OnPostEditAsync(int editId, BundleInput editInput)
+        public async Task<IActionResult> OnPostDeleteAsync(int deleteId)
         {
-            // Validate only the edit payload
-            if (!TryValidateModel(editInput, nameof(editInput)))
-            {
-                await OnGetAsync();
-                return Page();
-            }
-
-            var bundle = await _db.Bundles.FindAsync(editId);
+            var bundle = await _db.Bundles.FindAsync(deleteId);
             if (bundle == null)
             {
                 ModelState.AddModelError(string.Empty, "Пакетът не бе намерен.");
@@ -55,13 +49,19 @@ namespace AlphaMode.Pages.Admin
                 return Page();
             }
 
-            bundle.Name = editInput.Name.Trim();
-            bundle.Size = editInput.Size;
-            bundle.Price = editInput.Price;
-            bundle.IsActive = editInput.IsActive;
-
-            await _db.SaveChangesAsync();
-            return RedirectToPage();
+            try
+            {
+                _db.Bundles.Remove(bundle);
+                await _db.SaveChangesAsync();
+                return RedirectToPage();
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError(string.Empty, "Пакетът не може да бъде изтрит, защото се използва.");
+                await OnGetAsync();
+                return Page();
+            }
         }
+
     }
 }

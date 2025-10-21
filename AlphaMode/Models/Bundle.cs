@@ -15,6 +15,7 @@ namespace AlphaMode.Models
         [Range(typeof(decimal), "0", "9999")]
         public decimal Price { get; set; }
 
+        public bool FrontDisplay { get; set; } = false;
         public bool IsActive { get; set; } = true;
     }
 }

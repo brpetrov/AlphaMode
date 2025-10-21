@@ -38,12 +38,16 @@
                 <div class="col-md-6">
                     <label asp-for="Order.BundleId" class="form-label">Количество</label>
                     <select asp-for="Order.BundleId" class="form-select" required id="bundleSelect">
-                        <option value="">Изберете пакет...</option>
+                    <option value="">Изберете пакет...</option>
                         @foreach (var b in Model.Bundles)
                         {
-                            <option value="@b.Id" data-price="@b.Price">@b.Name (@b.Size бр.) – @b.Price лв.</option>
+                            <option value="@b.Id"
+                                    data-price="@b.Price"
+                                    selected="@(Model.Order.BundleId == b.Id ? "selected" : null)">
+                                @b.Name (@b.Size бр.) – @b.Price лв.
+                            </option>
                         }
-                    </select>
+                </select>
                     <span asp-validation-for="Order.BundleId" class="text-danger"></span>
                 </div>
 

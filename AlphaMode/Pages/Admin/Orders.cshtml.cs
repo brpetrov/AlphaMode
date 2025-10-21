@@ -55,5 +55,16 @@ namespace AlphaMode.Pages.Admin
             return RedirectToPage();
         }
 
+        public static string StatusBadgeClass(OrderStatus status) => status switch
+        {
+            OrderStatus.New => "bg-primary",  // Новa       
+            OrderStatus.Delivered => "bg-success",  // Доставена
+            OrderStatus.Cancelled => "bg-danger",   // Отказана
+            OrderStatus.Refused => "bg-danger",
+            OrderStatus.Returned => "bg-warning",
+            OrderStatus.OutForDelivery=> "bg-info",
+            _ => "bg-secondary"
+        };
+
     }
 }

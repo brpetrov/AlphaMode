@@ -266,6 +266,34 @@
         })[m]);
     }
 
+
+    function renderHeroRating() {
+        const el = document.getElementById('heroRating');
+        if (!el) return;
+
+        const starsEl = document.getElementById('heroStars');
+        const avgEl = document.getElementById('heroAvg');
+        const cntEl = document.getElementById('heroCount');
+
+        const avg = stats.avg || 0;
+        const rounded = Math.max(0, Math.min(5, Math.round(avg)));
+
+        if (starsEl) starsEl.textContent = '★'.repeat(rounded) + '☆'.repeat(5 - rounded);
+        if (avgEl) avgEl.textContent = avg.toFixed(1);
+        if (cntEl) cntEl.textContent = reviews.length;
+
+        el.hidden = false;
+    }
+
+    /** dispatchReadyEvent - lets the page hook into rating data if needed (SEO JSON-LD, etc.) */
+    function dispatchReadyEvent() {
+        try {
+            document.dispatchEvent(new CustomEvent('reviews:ready', {
+                detail: { avg: stats.avg || 0, total: reviews.length }
+            }));
+        } catch { /* no-op */ }
+    }
+
     // -----------------------
     // Initialization
     // -----------------------
@@ -278,7 +306,9 @@
         await fetchReviews();
         renderAverageBlock();
         renderHistogram();
+        renderHeroRating();  
         renderPage(1);
+        dispatchReadyEvent();
     }
 
     // run after DOMContent is parsed (script is loaded with defer so DOM is ready)
@@ -291,7 +321,8 @@
     // expose for debugging if you need (optional)
     window.ReviewsModule = {
         _state: () => ({ reviews, pageCount, currentPage, stats }),
-        refresh: async () => { await fetchReviews(); renderAverageBlock(); renderHistogram(); renderPage(currentPage); }
+        refresh: async () => { await fetchReviews(); renderAverageBlock(); renderHistogram(); renderPage(currentPage); renderHeroRating(); },
+        renderHeroRating,   // 👈 add this
     };
 
 })();

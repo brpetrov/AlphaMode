@@ -1,0 +1,77 @@
+﻿@page "{id?}"
+@model AlphaMode.Pages.Admin.BundleDetailModel
+@{
+    ViewData["Title"] = Model.IsCreate ? "Нов пакет" : $"Редакция: {Model.Input?.Name ?? ""}";
+}
+
+<h1 class="mb-4 fw-semibold">
+    <i class="bi bi-box2-heart"></i>
+    @(Model.IsCreate ? "Нов пакет" : "Редакция на пакет")
+</h1>
+
+<partial name="_ValidationSummary" />
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Input.Id" />
+
+    <div class="row g-3">
+        <div class="col-12">
+            <label asp-for="Input.Name" class="form-label"></label>
+            <input asp-for="Input.Name" class="form-control" maxlength="40" />
+            <span class="text-danger" asp-validation-for="Input.Name"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Input.Size" class="form-label"></label>
+            <input asp-for="Input.Size" type="number" min="1" max="100" class="form-control" />
+            <span class="text-danger" asp-validation-for="Input.Size"></span>
+        </div>
+
+        <div class="col-md-6">
+            <label asp-for="Input.Price" class="form-label"></label>
+            <input asp-for="Input.Price" type="number" step="0.01" min="0" max="9999" class="form-control" />
+            <span class="text-danger" asp-validation-for="Input.Price"></span>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-check mt-2">
+                <input asp-for="Input.IsActive" class="form-check-input" />
+                <label asp-for="Input.IsActive" class="form-check-label"></label>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-check mt-2">
+                <input asp-for="Input.FrontDisplay" class="form-check-input" />
+                <label asp-for="Input.FrontDisplay" class="form-check-label"></label>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+        <button type="submit" formaction="?handler=Save" class="btn btn-primary">
+            <i class="bi bi-save"></i> Запази
+        </button>
+
+        @if (!Model.IsCreate)
+        {
+            <form method="post" class="d-inline" asp-page-handler="Delete"
+                  onsubmit='return confirm(@($"Сигурни ли сте, че искате да изтриете \"{Model.Input?.Name}\"?"));'>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Input?.Id" />
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i> Изтрий
+                </button>
+            </form>
+        }
+
+        <a asp-page="/Admin/Bundles" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Назад
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

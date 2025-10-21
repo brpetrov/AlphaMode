@@ -38,7 +38,7 @@ namespace AlphaMode.Models
         [Required, Display(Name = "Телефон"), Phone, StringLength(30)]
         public string Telephone { get; set; } = default!;
 
-        [Required, Display(Name = "Дата на раждане"), DataType(DataType.Date)]
+        [Display(Name = "Дата на раждане"), DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
 
         //// Order
@@ -58,6 +58,9 @@ namespace AlphaMode.Models
 
         [Display(Name = "Промо код"), StringLength(30)]
         public string? PromoCode { get; set; }
+
+        [Display(Name = "Бележки"), StringLength(500)]
+        public string? Notes {get; set; }
 
         // System
         public OrderStatus Status { get; set; } = OrderStatus.New;

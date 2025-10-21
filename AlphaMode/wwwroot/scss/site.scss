@@ -3,7 +3,7 @@
 // Variables
 $am-carbon: #111827; // near-carbon
 $am-ink: #0b0f17;
-$font-stack: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+$font-stack: 'Montserrat', sans-serif;
 
 // Expose as CSS custom properties so existing var() usages still work
 :root {
@@ -91,4 +91,141 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
 
 .validation-summary-errors, .field-validation-error {
     color: #dc3545;
+}
+
+
+/* Scope to the picker only */
+#bundlePicker .form-label {
+    font-size: 1.05rem;
+}
+
+#bundlePicker .form-check {
+    padding: .85rem 1rem;
+    border: 1px solid #e9ecef;
+    border-radius: .85rem;
+    background: #fff;
+    transition: box-shadow .15s ease, border-color .15s ease;
+}
+
+#bundlePicker .form-check + .form-check {
+    margin-top: .75rem;
+}
+
+/* Bigger radio hit target */
+#bundlePicker .form-check-input {
+    transform: scale(1.25);
+    margin-top: .25rem; /* vertically align with text */
+}
+
+/* Typography */
+#bundlePicker .form-check-label span:first-child {
+    font-size: 1.05rem;
+}
+
+#bundlePicker .form-check-label span:last-child {
+    font-size: 1.05rem;
+}
+
+/* Hover / focus */
+#bundlePicker .form-check:hover {
+    border-color: #ced4da;
+    box-shadow: 0 0 0 .15rem rgba(0,0,0,.03);
+}
+
+#bundlePicker .form-check-input:focus {
+    box-shadow: 0 0 0 .25rem rgba(13,110,253,.15);
+}
+
+/* Selected state border hint */
+#bundlePicker .form-check-input:checked ~ label,
+#bundlePicker .form-check-input:checked {
+    border-color: #0d6efd !important;
+}
+
+/* Mobile: stack name/price, increase spacing */
+@media (max-width: 576px) {
+    #bundlePicker .form-check {
+        padding: 1rem 1.1rem;
+    }
+
+    #bundlePicker .form-check-input {
+        transform: scale(1.35);
+    }
+
+    #bundlePicker .form-check-label {
+        flex-direction: column !important;
+        align-items: flex-start;
+        gap: .25rem;
+    }
+
+    #bundlePicker .form-check-label span:first-child {
+        font-size: 1.1rem;
+    }
+
+    #bundlePicker .form-check-label span:last-child {
+        font-size: 1.1rem;
+    }
+}
+
+
+
+//Sticky banner
+/* ====== TICKER (no JS) ====== */
+.am-ticker {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    background: linear-gradient(90deg,#0f1115 0%, #161a22 100%);
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    font-size: .95rem;
+}
+
+.am-ticker__track {
+    overflow: hidden;
+    white-space: nowrap;
+}
+/* The moving row is twice as wide (A + B) and we slide it by -50% */
+.am-ticker__row {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: am-scroll 34s linear infinite;
+    will-change: transform;
+}
+
+.am-ticker__seq {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 0;
+    padding: .65rem 1rem;
+    list-style: none;
+}
+
+.am-ticker__seq li strong {
+    font-weight: 700;
+}
+
+/* Smooth, endless loop */
+@keyframes am-scroll {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* Pause when hovered (optional) */
+.am-ticker:hover .am-ticker__row {
+    animation-play-state: paused;
+}
+
+@media (max-width:576px) {
+    .am-ticker__seq {
+        gap: 1.1rem;
+        padding: .75rem .75rem;
+    }
 }

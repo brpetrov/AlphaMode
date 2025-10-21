@@ -4,6 +4,7 @@ using AlphaMode.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AlphaMode.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251014090735_AddedNotesToOrder")]
+    partial class AddedNotesToOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,9 +32,6 @@ namespace AlphaMode.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("FrontDisplay")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -55,7 +55,6 @@ namespace AlphaMode.Data.Migrations
                         new
                         {
                             Id = 1,
-                            FrontDisplay = false,
                             IsActive = true,
                             Name = "1 опаковка",
                             Price = 59m,
@@ -64,7 +63,6 @@ namespace AlphaMode.Data.Migrations
                         new
                         {
                             Id = 2,
-                            FrontDisplay = false,
                             IsActive = true,
                             Name = "2 опаковки",
                             Price = 100m,
@@ -73,7 +71,6 @@ namespace AlphaMode.Data.Migrations
                         new
                         {
                             Id = 3,
-                            FrontDisplay = false,
                             IsActive = true,
                             Name = "3 опаковки",
                             Price = 140m,
