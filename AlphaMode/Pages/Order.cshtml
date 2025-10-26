@@ -10,6 +10,14 @@
         <h1 class="mb-4 text-center">Поръчка</h1>
 
         <form method="post">
+            <!-- Validation summary -->
+            <div class="text-danger mb-3">
+                <div asp-validation-summary="ModelOnly"></div>
+            </div>
+
+            <input type="hidden" id="promoPercentServer" value="@Model.PromoPercent" />
+
+
             <div class="row g-3">
                 <div class="col-12">
                     <label asp-for="Order.FullName" class="form-label"></label>
@@ -30,15 +38,21 @@
                 </div>
 
                 <div class="col-md-6">
+                    <label asp-for="Order.EmailAddress" class="form-label"></label>
+                    <input asp-for="Order.EmailAddress" class="form-control" />
+                    <span asp-validation-for="Order.EmailAddress" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
                     <label asp-for="Order.DateOfBirth" class="form-label"></label>
-                    <input asp-for="Order.DateOfBirth" class="form-control" />
+                    <input asp-for="Order.DateOfBirth" class="form-control" type="date" />
                     <span asp-validation-for="Order.DateOfBirth" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6">
                     <label asp-for="Order.BundleId" class="form-label">Количество</label>
                     <select asp-for="Order.BundleId" class="form-select" required id="bundleSelect">
-                    <option value="">Изберете пакет...</option>
+                        <option value="">Изберете пакет...</option>
                         @foreach (var b in Model.Bundles)
                         {
                             <option value="@b.Id"
@@ -47,7 +61,7 @@
                                 @b.Name (@b.Size бр.) – @b.Price лв.
                             </option>
                         }
-                </select>
+                    </select>
                     <span asp-validation-for="Order.BundleId" class="text-danger"></span>
                 </div>
 
@@ -77,7 +91,9 @@
             </div>
 
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-dark btn-lg rounded-pill px-5">Потвърди поръчката</button>
+                <button type="submit" class="btn btn-dark btn-lg rounded-pill px-5">
+                    Потвърди поръчката
+                </button>
             </div>
         </form>
     </div>
@@ -85,6 +101,35 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // --- Client-side adapter for [MinAge(18)] on DateOfBirth ---
+        // Adds jQuery Validate rule "minage" that reads data-val-minage="18"
+        (function () {
+            if (!window.jQuery || !jQuery.validator || !jQuery.validator.unobtrusive) return;
+
+            // Add the method (expects ISO date or yyyy-MM-dd from <input type="date">)
+            jQuery.validator.addMethod("minage", function (value, element, params) {
+                if (!value) return true; // allow empty; server will also allow null
+                const years = parseInt(params.years || params, 10);
+                if (isNaN(years)) return true;
+
+                // value from type="date" is yyyy-MM-dd
+                const dob = new Date(value + "T00:00:00");
+                if (isNaN(dob.getTime())) return false;
+
+                const today = new Date();
+                const eighteenth = new Date(dob.getFullYear() + years, dob.getMonth(), dob.getDate());
+                return eighteenth <= new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            });
+
+            // Tie unobtrusive attribute to the rule
+            jQuery.validator.unobtrusive.adapters.addSingleVal("minage", "years", function (options) {
+                options.rules["minage"] = { years: options.params.years };
+                options.messages["minage"] = options.message;
+            });
+        })();
+    </script>
+
     <script>
         (function () {
           const bundleSelect = document.getElementById('bundleSelect');
@@ -128,7 +173,6 @@
             if (!code) { recalc(); return; }
 
             try {
-              // calls OnGetPromoAsync handler: /Order?handler=Promo&code=XXX
               const url = `@Url.Page("/Order", null, new { handler = "Promo" }, null)&code=${encodeURIComponent(code)}`;
               const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
               if (!res.ok) throw new Error('network');
@@ -139,7 +183,7 @@
                 promoFeedback.textContent = `Промо кодът е активен: -${data.percent}%`;
                 promoFeedback.className = 'form-text text-success';
               } else {
-                promoFeedback.textContent = data.message || 'Невалиден промо код.';
+                promoFeedback.textContent = (data.message || 'Невалиден промо код.');
                 promoFeedback.className = 'form-text text-danger';
               }
             } catch {
@@ -160,8 +204,12 @@
           });
           promoInput?.addEventListener('blur', validatePromo);
 
-          // initial calc
+        // initial calc: if there's a promo code, re-validate it immediately
+        if (promoInput && promoInput.value.trim()) {
+          validatePromo();
+        } else {
           recalc();
+        }
         })();
     </script>
 }

@@ -7,40 +7,9 @@
 }
 
 
-<div class="am-ticker" role="region" aria-label="Alpha Mode предимства">
-    <div class="am-ticker__track">
-        <div class="am-ticker__row">
-            <!-- A -->
-            <ul class="am-ticker__seq">
-                <li>🌿 <strong>Натурална формула</strong> — без синтетични стимуланти</li>
-                <li>📈 <strong>Подкрепя естествения тестостерон</strong></li>
-                <li>⚡ <strong>Енергия и издръжливост</strong> през целия ден</li>
-                <li>🧠 <strong>По-добър фокус</strong> и концентрация</li>
-                <li>🔥 <strong>Подкрепя либидото</strong> и сексуалната функция</li>
-                <li>⏱️ <strong>По-бързо възстановяване</strong> след тренировка</li>
-                <li>🛡️ <strong>Повишава жизнеността</strong> и тонуса</li>
-                <li>🇧🇬 <strong>Произведено в България</strong></li>
-                <li>🚚 <strong>Бърза доставка</strong> до врата</li>
-                <li>✅ <strong>Гаранция „Без риск“</strong></li>
-            </ul>
-            <!-- B (identical copy; required for seamless loop) -->
-            <ul class="am-ticker__seq" aria-hidden="true">
-                <li>🌿 <strong>Натурална формула</strong> — без синтетични стимуланти</li>
-                <li>📈 <strong>Подкрепя естествения тестостерон</strong></li>
-                <li>⚡ <strong>Енергия и издръжливост</strong> през целия ден</li>
-                <li>🧠 <strong>По-добър фокус</strong> и концентрация</li>
-                <li>🔥 <strong>Подкрепя либидото</strong> и сексуалната функция</li>
-                <li>⏱️ <strong>По-бързо възстановяване</strong> след тренировка</li>
-                <li>🛡️ <strong>Повишава жизнеността</strong> и тонуса</li>
-                <li>🇧🇬 <strong>Произведено в България</strong></li>
-                <li>🚚 <strong>Бърза доставка</strong> до врата</li>
-                <li>✅ <strong>Гаранция „Без риск“</strong></li>
-            </ul>
-        </div>
-    </div>
-</div>
+<partial name="_PromoBanner" />
 
-<!-- One hero section: image + text bullets-->
+<!--hero section-->
 <section class="py-5 am-hero">
     <div class="container">
         <div class="row g-4 align-items-center">
@@ -102,11 +71,11 @@
     </div>
 </section>
 
-<!-- Product intro section (below hero CTA) -->
+<!-- Product intro section -->
 <section class="py-4 py-md-5 border-top">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-10">
+            <div class="col-lg-12">
                 <div class="p-4 p-md-5 bg-white rounded-4 shadow-sm">
                     <div class="d-flex align-items-center mb-3">
                         <span class="badge bg-dark rounded-pill me-2">Alpha Mode</span>
@@ -114,11 +83,11 @@
                     </div>
 
                     <p class="lead mb-4">
-                        Българска натурална добавка, създадена за мъже, които искат да възстановят енергията, силата, фокуса и сексуалната си функция.
+                        Създаден за мъже, които искат да възстановят енергията, силата, фокуса и сексуалната си функция.
                     </p>
 
                     <p class="lead mb-0">
-                        Формулата съчетава бабини зъби, боров прашец, ашваганда, женшен, цинк, витамин B6 и пиперин
+                        Формулата съчетава бабини зъби, боров прашец, ашваганда, женшен, цинк, витамин B6 и пиперин.
                     </p>
                 </div>
             </div>
@@ -126,9 +95,100 @@
     </div>
 </section>
 
-<section class="py-5 bg-light">
+<section class="pt-5 pb-3 text-center">
+    <div class="container">
+        <h2 class="fw-bold my-5">Готови ли сте за промяна?</h2>
+        <p class="mb-4 lead text-muted">
+        <p class="lead mt-3">Включи Alpha Mode. Стани версията на себе си, която командва!</p>
+        </p>
+    </div>
+</section>
+
+<section id="am-compare3" class="pb-5">
+    <div class="container">
+        <div class="card shadow-sm rounded-4 overflow-hidden col-lg-8 mx-auto">
+
+            <div class="bg-light border-bottom">
+                <div class="row g-0 align-items-center flex-nowrap px-3 py-3">
+                    <div class="col text-wrap"></div>
+                    <div class="col-auto am-col-brand">
+                        <span class="badge rounded-pill text-bg-dark px-3 py-2">ALPHA MODE</span>
+                    </div>
+                    <div class="col-auto am-col-other">
+                        <span class="badge rounded-pill bg-body-tertiary text-dark px-3 py-2">ДРУГИ</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 1 -->
+            <div class="row g-0 align-items-center flex-nowrap px-3 py-3">
+                <div class="col fw-semibold text-wrap">100% натурални съставки</div>
+                <div class="col-auto am-col-brand">
+                    <i class="bi bi-check2-circle text-success fs-5"></i>
+                </div>
+                <div class="col-auto am-col-other">
+                    <i class="bi bi-x-lg text-secondary fs-6"></i>
+                </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="row g-0 align-items-center flex-nowrap border-top px-3 py-3">
+                <div class="col fw-semibold text-wrap">Подкрепя естествения тестостерон</div>
+                <div class="col-auto am-col-brand">
+                    <i class="bi bi-check2-circle text-success fs-5"></i>
+                </div>
+                <div class="col-auto am-col-other">
+                    <i class="bi bi-x-lg text-secondary fs-6"></i>
+                </div>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="row g-0 align-items-center flex-nowrap border-top px-3 py-3">
+                <div class="col fw-semibold text-wrap">Енергия, издръжливост и фокус</div>
+                <div class="col-auto am-col-brand">
+                    <i class="bi bi-check2-circle text-success fs-5"></i>
+                </div>
+                <div class="col-auto am-col-other">
+                    <i class="bi bi-x-lg text-secondary fs-6"></i>
+                </div>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="row g-0 align-items-center flex-nowrap border-top px-3 py-3">
+                <div class="col fw-semibold text-wrap">Българско производство</div>
+                <div class="col-auto am-col-brand">
+                    <i class="bi bi-check2-circle text-success fs-5"></i>
+                </div>
+                <div class="col-auto am-col-other">
+                    <i class="bi bi-x-lg text-secondary fs-6"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a class="btn btn-dark btn-lg rounded-pill mt-4 px-5" asp-page="/Order">Опитай Сега</a>
+        <p class="text-sm text-muted mt-2">Без Риск</p>
+    </div>
+</section>
+
+<section class="pb-5 pt-5 border-bottom border-top text-center bg-light">
+    <div class="container">
+        <h6 class="display-6 fw-bold mb-2">100% ГАРАНЦИЯ ЗА УДОВЛЕТВОРЕНОСТ</h6>
+        <p class="lead text-muted mb-4">
+            Ако в рамките на <strong>30 дни</strong> от началото на приема на <strong>Alpha Mode</strong>
+            не видите резултати,<br /> ще ви <strong>върнем парите</strong> — без излишни въпроси.
+        </p>
+        <div class="col-lg-4 mx-auto p-3">
+            <img class="img-fluid mx-auto d-block" src="~/images/money-back.png" alt="30-дневна гаранция за връщане на парите" />
+
+        </div>
+    </div>
+</section>
+
+<section class="pb-5 border-top">
     <div class="container text-center">
-        <h2 class="my-5 fw-bold">Защо да избереш Alpha Mode?</h2>
+        <h2 class="my-5 fw-bold">Още причини?</h2>
         <div class="row g-4 justify-content-evenly">
             <div class="col-md-3">
                 <div class="p-4 h-100 border rounded shadow-sm bg-white">
@@ -162,18 +222,77 @@
     </div>
 </section>
 
-<section class="py-5 text-center">
-    <div class="container">
-        <h2 class="fw-bold my-5">Готови ли сте за промяна?</h2>
-        <p class="mb-4 lead text-muted">
-        <p class="lead mt-3">Включи Alpha Mode. Стани версията на себе си, която командва!</p>
-        </p>
-        <a class="btn btn-dark btn-lg rounded-pill mt-4 px-5" asp-page="/Order">Опитай Сега</a>
-        <p class="text-sm text-muted mt-2">Без Риск</p>
+<section class="container my-4 pt-4 pb-3 border-top">
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+
+        <!-- 1) Бабини зъби -->
+        <div class="col">
+            <div class="d-flex align-items-start gap-2 h-100">
+                <img src="/images/Tribulus_terrestris.jpg"
+                     alt="Бабини зъби (390mg)"
+                     class="rounded-circle flex-shrink-0"
+                     style="width:48px;height:48px;object-fit:cover;"
+                     loading="lazy">
+                <div>
+                    <div class="fw-semibold">
+                        Бабини зъби <small class="text-muted">(390mg)</small>
+                    </div>
+                    <ul class="mb-0 ps-3" style="font-size:12px;line-height:1.4;">
+                        <li>Подкрепя тонуса и издръжливостта</li>
+                        <li>Помага за по-бързо възстановяване</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2) Ашваганда -->
+        <div class="col">
+            <div class="d-flex align-items-start gap-2 h-100">
+                <img src="/images/ashwaganda.jpg"
+                     alt="Ашваганда (Withania)"
+                     class="rounded-circle flex-shrink-0"
+                     style="width:48px;height:48px;object-fit:cover;"
+                     loading="lazy">
+                <div>
+                    <div class="fw-semibold">
+                        Ашваганда <small class="text-muted">(390mg)</small>
+                    </div>
+                    <ul class="mb-0 ps-3" style="font-size:12px;line-height:1.4;">
+                        <li>Съдействa за адаптация към стреса</li>
+                        <li>Подкрепя съня и концентрацията</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3) Женшен -->
+        <div class="col">
+            <div class="d-flex align-items-start gap-2 h-100">
+                <img src="/images/ginseng.jpg"
+                     alt="Женшен (Panax)"
+                     class="rounded-circle flex-shrink-0"
+                     style="width:48px;height:48px;object-fit:cover;"
+                     loading="lazy">
+                <div>
+                    <div class="fw-semibold">
+                        Женшен <small class="text-muted">(195mg)</small>
+                    </div>
+                    <ul class="mb-0 ps-3" style="font-size:12px;line-height:1.4;">
+                        <li>Подкрепя енергията и фокуса</li>
+                        <li>Съдействa за жизненост и тонус</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <p class="text-muted mt-5 text-center" style="font-size:11.5px;">
+        *Продуктът не е лекарствено средство и не замества разнообразното хранене.
+    </p>
 </section>
 
-<section id="reviews-summary" class="py-5 bg-white">
+<section id="reviews-summary" class="my-5 py-5 bg-white">
     <div class="container">
         <h2 class="fw-bold text-center mb-5">
             <i class="bi bi-chat-heart-fill me-2"></i> Отзиви на клиенти
@@ -233,7 +352,7 @@
 
                     </div>
                     <div id="ratingPreview" class="text-dark h4 my-3" aria-hidden="true"></div>
-           
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -257,7 +376,7 @@
 <!-- ★ Reviews Section -->
 <section id="reviews" class="py-5 bg-light border-top">
     <div class="container">
-      
+
         <!-- Reviews grid -->
         <div id="reviewsContainer" class="row g-4"></div>
 
@@ -267,7 +386,6 @@
         </nav>
     </div>
 </section>
-
 
 <script>
     (function () {

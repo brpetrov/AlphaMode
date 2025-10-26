@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11111.16 d18.0
+VisualStudioVersion = 18.0.11111.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlphaMode", "AlphaMode\AlphaMode.csproj", "{3ACF726F-C309-4DDD-B82A-E7BF9678958F}"
 EndProject

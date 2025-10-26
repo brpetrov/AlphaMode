@@ -21,17 +21,29 @@
 <body>
     <!-- Header with text logo -->
     <header class="am-header">
+        @if (User?.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+        {
+            <a class="text-light btn btn-primary btn-sm"
+                style="position:fixed; top:175px; left:10px;"
+                asp-area=""
+                asp-page="/Admin/Index"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+                data-bs-trigger="hover focus"
+                title="Бутона е видим само за администратори">
+                Отвори Админ
+            </a>
+        }
         <div class="container d-flex align-items-center justify-content-between">
+         
             <a class="am-logo fs-4" asp-area="" asp-page="/Index">AlphaMode</a>
+        
             <a class="btn btn-dark rounded-pill px-4" asp-page="/Order">Купи Сега</a>
-
         </div>
     </header>
 
-
-
     <!-- Page content will render here if you add more sections on a page -->
-    <main role="main" class="pb-3" >
+    <main role="main" class="pb-3">
         @RenderBody()
     </main>
 

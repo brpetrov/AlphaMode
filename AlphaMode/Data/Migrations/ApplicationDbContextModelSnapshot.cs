@@ -42,6 +42,7 @@ namespace AlphaMode.Data.Migrations
                         .HasColumnType("nvarchar(40)");
 
                     b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Size")
@@ -103,6 +104,11 @@ namespace AlphaMode.Data.Migrations
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(80)
@@ -125,6 +131,7 @@ namespace AlphaMode.Data.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<decimal>("TotalPrice")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedUtc")

@@ -5,24 +5,25 @@
 namespace AlphaMode.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedNotesToOrder : Migration
+    public partial class AddEmailAndDobConstraintToOrders : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Notes",
+                name: "EmailAddress",
                 table: "Orders",
-                type: "nvarchar(500)",
-                maxLength: 500,
-                nullable: true);
+                type: "nvarchar(120)",
+                maxLength: 120,
+                nullable: false,
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Notes",
+                name: "EmailAddress",
                 table: "Orders");
         }
     }

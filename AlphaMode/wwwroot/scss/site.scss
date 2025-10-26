@@ -1,4 +1,3 @@
-// AlphaMode public styles (SCSS)
 
 // Variables
 $am-carbon: #111827; // near-carbon
@@ -227,5 +226,46 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     .am-ticker__seq {
         gap: 1.1rem;
         padding: .75rem .75rem;
+    }
+}
+
+/* === Compare: lock icon columns + perfect mobile alignment === */
+#am-compare3 .am-col-brand,
+#am-compare3 .am-col-other {
+    flex: 0 0 auto; /* don't shrink or wrap */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#am-compare3 .am-col-brand {
+    width: 130px;
+}
+/* icon col 2 */
+#am-compare3 .am-col-other {
+    width: 72px;
+}
+/* icon col 3 */
+
+/* Consistent icon box so rows align even with multi-line text */
+#am-compare3 .am-col-brand i,
+#am-compare3 .am-col-other i {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    font-size: 20px;
+}
+
+/* Slightly wider on md+ screens */
+@media (min-width: 768px) {
+    #am-compare3 .am-col-brand {
+        width: 160px;
+    }
+
+    #am-compare3 .am-col-other {
+        width: 90px;
     }
 }

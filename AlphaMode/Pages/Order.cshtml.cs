@@ -29,6 +29,9 @@ namespace AlphaMode.Pages
         [BindProperty]
         public Order Order { get; set; } = new();
 
+        [BindProperty]
+        public decimal PromoPercent { get; set; }
+
         [BindProperty(SupportsGet = true)]
         public int? SelectedBundleId { get; set; }
 
@@ -93,24 +96,34 @@ namespace AlphaMode.Pages
                 var basePrice = bundle.Price;
 
                 // Promo handling
-                decimal discountPercent = 0m;
+             
+                PromoPercent = 0m;
                 if (!string.IsNullOrWhiteSpace(Order.PromoCode))
                 {
                     var promo = await _db.PromoCodes
                         .AsNoTracking()
                         .FirstOrDefaultAsync(p => p.Code == Order.PromoCode, ct);
 
-                    if (promo == null || !promo.IsActive || promo.ValidUntilUtc < DateTime.UtcNow)
+                    if (promo != null && promo.IsActive && promo.ValidUntilUtc >= DateTime.UtcNow)
                     {
-                        ModelState.AddModelError("Order.PromoCode", "Промо кодът е невалиден или изтекъл.");
-                        return Page();
+                        PromoPercent = Convert.ToDecimal(promo.DiscountPercent);
+                        if (PromoPercent < 0m) PromoPercent = 0m;
+                        if (PromoPercent > 100m) PromoPercent = 100m;
                     }
-
-                    // Adjust property name if different
-                    discountPercent = Convert.ToDecimal(promo.DiscountPercent);
-                    if (discountPercent < 0m) discountPercent = 0m;
-                    if (discountPercent > 100m) discountPercent = 100m;
+                    else
+                    {
+                        // keep the entered code; show the error
+                        ModelState.AddModelError("Order.PromoCode", "Промо кодът е невалиден или изтекъл.");
+                    }
                 }
+
+                // If the form is invalid, return the page WITH PromoPercent set
+                if (!ModelState.IsValid)
+                {
+                    return Page();
+                }
+
+                decimal discountPercent = PromoPercent;
 
                 // Final price
                 var discountAmount = Math.Round(basePrice * (discountPercent / 100m), 2, MidpointRounding.AwayFromZero);
