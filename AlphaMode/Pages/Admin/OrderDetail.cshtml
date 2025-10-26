@@ -30,6 +30,7 @@
                         <tr><td class="text-muted" style="width:220px;">Име</td><td>@Model.Form.FullName</td></tr>
                         <tr><td class="text-muted">Телефон</td><td>@Model.Form.Telephone</td></tr>
                         <tr><td class="text-muted">Адрес</td><td>@Model.Form.Address</td></tr>
+                        <tr><td class="text-muted">Имейл</td><td>@Model.Form.Email</td></tr>
                         <tr><td class="text-muted">Дата на раждане</td><td>@(Model.Form.DateOfBirth?.ToString("dd.MM.yyyy") ?? "-")</td></tr>
                     </tbody>
                 </table>
@@ -78,7 +79,7 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <a class="btn btn-outline-secondary" asp-page="/Admin/Orders"><i class="bi bi-arrow-left"></i> Назад</a>
+                    <a class="btn btn-outline-dark" asp-page="/Admin/Orders"><i class="bi bi-arrow-left"></i> Назад</a>
                     <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Запази</button>
                 </div>
             </form>

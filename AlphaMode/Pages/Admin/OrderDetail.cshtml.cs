@@ -24,6 +24,7 @@ namespace AlphaMode.Pages.Admin
             // read-only display (populated for view)
             public string FullName { get; set; } = "";
             public string Address { get; set; } = "";
+            public string Email { get; set; } = "";
             public string Telephone { get; set; } = "";
             public DateTime? DateOfBirth { get; set; }
             public Bundle? Bundle { get; set; }
@@ -54,6 +55,7 @@ namespace AlphaMode.Pages.Admin
                 Id = o.Id,
                 FullName = o.FullName,
                 Address = o.Address,
+                Email = o.EmailAddress,
                 Telephone = o.Telephone,
                 DateOfBirth = o.DateOfBirth,
                 Bundle = o.Bundle,
