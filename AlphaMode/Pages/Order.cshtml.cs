@@ -50,7 +50,7 @@ namespace AlphaMode.Pages
                 var exists = Bundles.Any(b => b.Id == bundleId.Value);
                 if (exists)
                 {
-                    Order.BundleId = bundleId.Value; // <-- this is what the <select> should reflect
+                    Order.BundleId = bundleId.Value;
                 }
             }
         }
@@ -67,8 +67,7 @@ namespace AlphaMode.Pages
             if (promo == null || !promo.IsActive || promo.ValidUntilUtc < DateTime.UtcNow)
                 return new JsonResult(new { valid = false, message = "Промо кодът е невалиден или изтекъл." });
 
-            // Adjust property name if yours differs (e.g., DiscountPercent)
-            var percent = promo.DiscountPercent; // int or decimal 0..100
+            var percent = promo.DiscountPercent;
             return new JsonResult(new { valid = true, percent });
         }
 
@@ -76,7 +75,6 @@ namespace AlphaMode.Pages
         {
             try
             {
-                // Reload bundles on post-back
                 Bundles = await _db.Bundles
                     .Where(b => b.IsActive && (b.Size == 1 || b.Size == 2 || b.Size == 3))
                     .OrderBy(b => b.Size)
@@ -85,7 +83,6 @@ namespace AlphaMode.Pages
                 if (!ModelState.IsValid)
                     return Page();
 
-                // Get bundle/base price
                 var bundle = await _db.Bundles.FindAsync(new object?[] { Order.BundleId }, ct);
                 if (bundle == null || !bundle.IsActive)
                 {
@@ -95,8 +92,6 @@ namespace AlphaMode.Pages
 
                 var basePrice = bundle.Price;
 
-                // Promo handling
-             
                 PromoPercent = 0m;
                 if (!string.IsNullOrWhiteSpace(Order.PromoCode))
                 {
@@ -112,7 +107,6 @@ namespace AlphaMode.Pages
                     }
                     else
                     {
-                        // keep the entered code; show the error
                         ModelState.AddModelError("Order.PromoCode", "Промо кодът е невалиден или изтекъл.");
                     }
                 }
@@ -141,6 +135,7 @@ namespace AlphaMode.Pages
                     OrderId = id,
                     FullName = Order.FullName,
                     Telephone = Order.Telephone,
+                    Email = Order.EmailAddress,
                     Address = Order.Address,
                     BundleName = bundle.Name,
                     BasePrice = basePrice,
@@ -155,6 +150,14 @@ namespace AlphaMode.Pages
                 try
                 {
                     var hasDiscount = discountPercent > 0m;
+                    var orderDetailUrl = Url.Page(
+                        pageName: "/Admin/OrderDetail",
+                        pageHandler: null,
+                        values: new { id },
+                        protocol: Request.Scheme,
+                        host: Request.Host.ToString(),
+                        fragment: null
+                    );
                     var promoDisplay = vm.PromoCode ?? "-";
 
                     var html = $@"
@@ -176,6 +179,7 @@ namespace AlphaMode.Pages
                                       <table role=""presentation"" cellspacing=""0"" cellpadding=""0"" border=""0"" style=""width:100%;border-collapse:collapse;font-size:14px;"">
                                         <tr><td style=""padding:6px 0;width:160px;color:#6b7280;"">Име</td><td style=""padding:6px 0;"">{vm.FullName}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Телефон</td><td style=""padding:6px 0;"">{vm.Telephone}</td></tr>
+                                        <tr><td style=""padding:6px 0;color:#6b7280;"">Е=mail</td><td style=""padding:6px 0;"">{vm.Email}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Адрес</td><td style=""padding:6px 0;"">{vm.Address}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Промо код</td><td style=""padding:6px 0;"">{promoDisplay}</td></tr>
                                       </table>
@@ -202,6 +206,18 @@ namespace AlphaMode.Pages
                                           <td style=""padding:12px 0;text-align:right;font-size:16px;font-weight:700;"">{vm.FinalTotal:0.00} лв</td>
                                         </tr>
                                       </table>
+                                    </div>
+
+                                    <!-- Admin CTA -->
+                                    <div style=""padding:20px;text-align:center;"">
+                                        <a href=""{orderDetailUrl}""
+                                            style=""display:inline-block;padding:12px 18px;border-radius:8px;background:#111827;color:#ffffff;text-decoration:none;font-weight:600;"">
+                                        Отвори поръчката в администрация
+                                        </a>
+                                        <div style=""margin-top:8px;font-size:12px;color:#6b7280;"">
+                                        Или копирайте линка: <br/>
+                                        <span style=""word-break:break-all;color:#374151;"">{orderDetailUrl}</span>
+                                        </div>
                                     </div>
 
                                     <div style=""background:#f9fafb;color:#6b7280;padding:14px 20px;font-size:12px"">
