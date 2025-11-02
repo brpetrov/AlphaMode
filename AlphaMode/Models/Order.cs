@@ -13,6 +13,12 @@ namespace AlphaMode.Models
         [Display(Name = "Анулирана")] Cancelled = 5
     }
 
+    public enum DeliveryMethod
+    {
+        [Display(Name = "До адрес")] HomeAddress = 0,
+        [Display(Name = "До офис на Еконт")] EcontOffice = 1
+    }
+
     // Custom attribute: require at least MinYears old (inclusive)
     public sealed class MinAgeAttribute : ValidationAttribute
     {
@@ -45,6 +51,9 @@ namespace AlphaMode.Models
 
         [Required, Display(Name = "Телефон"), Phone, StringLength(30)]
         public string Telephone { get; set; } = default!;
+
+        [Required, Display(Name = "Доставка до")]
+        public DeliveryMethod DeliveryMethod { get; set; } = DeliveryMethod.HomeAddress;
 
         [Required, Display(Name = "Имейл"), EmailAddress, StringLength(120)]
         public string EmailAddress { get; set; } = default!;

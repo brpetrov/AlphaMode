@@ -14,10 +14,6 @@
                 <i class="bi bi-check2-circle" style="font-size:2rem;"></i>
             </div>
             <h1 class="mt-3 mb-1">Благодарим за поръчката!</h1>
-           @*  @if (Model.View != null)
-            {
-                <p class="text-muted mb-0">Номер на поръчка: <strong>#@Model.View.OrderId</strong></p>
-            } *@
         </div>
 
         @if (Model.View == null)
@@ -41,6 +37,10 @@
                                 <tbody>
                                     <tr><td class="text-muted" style="width: 220px;">Клиент</td><td>@Model.View.FullName</td></tr>
                                     <tr><td class="text-muted">Телефон</td><td>@Model.View.Telephone</td></tr>
+                                    <tr>
+                                        <td class="text-muted">@Model.View.DeliveryLabel</td>
+                                        <td><i class="bi bi-check"></i></td>
+                                    </tr>
                                     <tr><td class="text-muted">Адрес за доставка</td><td>@Model.View.Address</td></tr>
                                     <tr><td class="text-muted">Пакет</td><td>@Model.View.BundleName</td></tr>
                                     <tr><td class="text-muted">Цена (база)</td><td>@Model.View.BasePrice.ToString("0.00") лв</td></tr>
@@ -68,7 +68,7 @@
                     <div class="border rounded-3 p-3 p-md-4 h-100">
                         <h2 class="h5 mb-3">Доставка и плащане</h2>
                         <ul class="list-unstyled mb-3">
-                            <li class="mb-2"><i class="bi bi-truck"></i> Доставка: <strong>Speedy</strong> (1–3 работни дни)</li>
+                            <li class="mb-2"><i class="bi bi-truck"></i> Доставка: <strong>Еконт</strong> (1–3 работни дни)</li>
                             <li class="mb-2"><i class="bi bi-cash-coin"></i> Плащане: <strong>Наложен платеж</strong> при получаване</li>
                             <li class="mb-2"><i class="bi bi-info-circle"></i> Ще се свържем с вас за потвърждение.</li>
                         </ul>

@@ -30,6 +30,14 @@
                         <tr><td class="text-muted" style="width:220px;">Име</td><td>@Model.Form.FullName</td></tr>
                         <tr><td class="text-muted">Телефон</td><td>@Model.Form.Telephone</td></tr>
                         <tr><td class="text-muted">Адрес</td><td>@Model.Form.Address</td></tr>
+                        <tr>
+                            <td class="text-muted">Доставка</td>
+                            <td>
+                                <span class="badge @(Model.Form.DeliveryMethod == DeliveryMethod.EcontOffice ? "bg-dark" : "bg-secondary")">
+                                    @DisplayHelper.GetEnumDisplayName(Model.Form.DeliveryMethod)
+                                </span>
+                            </td>
+                        </tr>
                         <tr><td class="text-muted">Имейл</td><td>@Model.Form.Email</td></tr>
                         <tr><td class="text-muted">Дата на раждане</td><td>@(Model.Form.DateOfBirth?.ToString("dd.MM.yyyy") ?? "-")</td></tr>
                     </tbody>
@@ -59,6 +67,17 @@
             <form method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Form.Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Form.DeliveryMethod" class="form-label">Метод на доставка</label>
+                    <select asp-for="Form.DeliveryMethod" class="form-select">
+                        @foreach (DeliveryMethod dm in Enum.GetValues(typeof(DeliveryMethod)))
+                        {
+                            <option value="@((int)dm)">@DisplayHelper.GetEnumDisplayName(dm)</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Form.DeliveryMethod" class="text-danger"></span>
+                </div>
 
                 <div class="mb-3">
                     <label asp-for="Form.Status" class="form-label">Статус</label>

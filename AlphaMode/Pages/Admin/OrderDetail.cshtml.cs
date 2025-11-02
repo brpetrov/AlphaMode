@@ -33,6 +33,9 @@ namespace AlphaMode.Pages.Admin
             public DateTime CreatedUtc { get; set; }
             public DateTime? UpdatedUtc { get; set; }
 
+            [Display(Name = "Метод на доставка")]
+            public DeliveryMethod DeliveryMethod { get; set; }
+
             // editable
             [Display(Name = "Статус")]
             public OrderStatus Status { get; set; }
@@ -63,6 +66,7 @@ namespace AlphaMode.Pages.Admin
                 PromoCode = o.PromoCode,
                 CreatedUtc = o.CreatedUtc,
                 UpdatedUtc = o.UpdatedUtc,
+                DeliveryMethod = o.DeliveryMethod,
                 Status = o.Status,
                 Notes = o.Notes
             };
@@ -86,7 +90,7 @@ namespace AlphaMode.Pages.Admin
             o.Status = Form.Status;
             o.Notes = Form.Notes;
             o.UpdatedUtc = DateTime.UtcNow;
-
+            o.DeliveryMethod = Form.DeliveryMethod;
             await _db.SaveChangesAsync();
 
             TempData["Success"] = $"Поръчка #{o.Id} е обновена.";

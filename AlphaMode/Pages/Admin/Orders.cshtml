@@ -18,6 +18,7 @@
                 <th>Име</th>
                 <th>Телефон</th>
                 <th>Адрес</th>
+                <th>Доставка</th>
                 <th class="text-center" style="width:90px;">
                     Количество
                 </th>
@@ -38,6 +39,11 @@
                     <td>@o.FullName</td>
                     <td>@o.Telephone</td>
                     <td>@o.Address</td>
+                    <td>
+                        <span class="badge @(o.DeliveryMethod == DeliveryMethod.EcontOffice ? "bg-dark" : "bg-secondary")">
+                            @AlphaMode.Helpers.DisplayHelper.GetEnumDisplayName(o.DeliveryMethod)
+                        </span>
+                    </td>
                     <td class="text-center">
                         @if (o.Bundle != null)
                         {
@@ -145,7 +151,19 @@
 @section Scripts {
     <script>
         $(function () {
-          const COL = { ID:0, NAME:1, PHONE:2, ADDRESS:3, BUNDLE:4, PRICE:5, PROMO:6, DATE:7, STATUS:8, ACTIONS:9 };
+                  const COL = {
+          ID: 0,
+          NAME: 1,
+          PHONE: 2,
+          ADDRESS: 3,
+          DELIVERY: 4,         
+          BUNDLE: 5,
+          PRICE: 6,
+          PROMO: 7,
+          DATE: 8,
+          STATUS: 9,
+          ACTIONS: 10
+        };
 
           // Clone header to create filter row
           $('#ordersTable thead tr')
@@ -166,15 +184,15 @@
                 // choose which columns get which control
                 if ([COL.ID, COL.ACTIONS].includes(colIdx)) return; // no filter
 
-         // STATUS as <select> with unique values (strip HTML, dedupe, sort) + exact-match custom filter
-        if (colIdx === COL.STATUS) {
+                       // DELIVERY as <select> with unique values (exact-match)
+        if (colIdx === COL.DELIVERY) {
           const select = $('<select class="form-select form-select-sm"><option value="">Всички</option></select>')
             .appendTo(th);
 
-          // Collect unique display texts
-          const seen = new Map(); // key = lowercase, value = original text
+          // Collect unique delivery texts from the rendered cells (strip HTML)
+          const seen = new Map();
           api.column(colIdx).data().each(function (d) {
-            const text = $('<div>').html(d).text().trim(); // strip badge markup
+            const text = $('<div>').html(d).text().trim();
             if (!text) return;
             const key = text.toLowerCase();
             if (!seen.has(key)) seen.set(key, text);
@@ -183,20 +201,15 @@
           [...seen.values()].sort((a, b) => a.localeCompare(b, 'bg'))
             .forEach(txt => select.append('<option value="' + txt + '">' + txt + '</option>'));
 
-          // Register ONE custom status filter that checks the visible text of the status cell
-          let statusFilterFn = function (settings, data, dataIndex) {
-            if (settings.nTable !== api.table().node()) return true; // only this table
+          // One custom filter for DELIVERY (exact text)
+          let deliveryFilterFn = function (settings, data, dataIndex) {
+            if (settings.nTable !== api.table().node()) return true;
             const wanted = select.val();
             if (!wanted) return true;
-            const cellText = $(api.row(dataIndex).node()).find('td').eq(COL.STATUS).text().trim();
+            const cellText = $(api.row(dataIndex).node()).find('td').eq(COL.DELIVERY).text().trim();
             return cellText === wanted;
           };
-
-          // Make sure we don't stack multiple filters if initComplete re-runs
-          if (!$.fn.dataTable._alphaStatusFilterAdded) {
-            $.fn.dataTable.ext.search.push(statusFilterFn);
-            $.fn.dataTable._alphaStatusFilterAdded = true;
-          }
+          $.fn.dataTable.ext.search.push(deliveryFilterFn);
 
           select.on('change', function () {
             api.draw();
@@ -204,6 +217,45 @@
 
           return;
         }
+
+                 // STATUS as <select> with unique values (strip HTML, dedupe, sort) + exact-match custom filter
+                if (colIdx === COL.STATUS) {
+                  const select = $('<select class="form-select form-select-sm"><option value="">Всички</option></select>')
+                    .appendTo(th);
+
+                  // Collect unique display texts
+                  const seen = new Map(); // key = lowercase, value = original text
+                  api.column(colIdx).data().each(function (d) {
+                    const text = $('<div>').html(d).text().trim(); // strip badge markup
+                    if (!text) return;
+                    const key = text.toLowerCase();
+                    if (!seen.has(key)) seen.set(key, text);
+                  });
+
+                  [...seen.values()].sort((a, b) => a.localeCompare(b, 'bg'))
+                    .forEach(txt => select.append('<option value="' + txt + '">' + txt + '</option>'));
+
+                  // Register ONE custom status filter that checks the visible text of the status cell
+                  let statusFilterFn = function (settings, data, dataIndex) {
+                    if (settings.nTable !== api.table().node()) return true; // only this table
+                    const wanted = select.val();
+                    if (!wanted) return true;
+                    const cellText = $(api.row(dataIndex).node()).find('td').eq(COL.STATUS).text().trim();
+                    return cellText === wanted;
+                  };
+
+                  // Make sure we don't stack multiple filters if initComplete re-runs
+                  if (!$.fn.dataTable._alphaStatusFilterAdded) {
+                    $.fn.dataTable.ext.search.push(statusFilterFn);
+                    $.fn.dataTable._alphaStatusFilterAdded = true;
+                  }
+
+                  select.on('change', function () {
+                    api.draw();
+                  });
+
+                  return;
+                }
 
                 // PROMO as text input
                 if (colIdx === COL.PROMO) {

@@ -23,6 +23,7 @@ namespace AlphaMode.Data
             builder.Entity<Order>().HasIndex(x => new { x.Status, x.CreatedUtc });
             builder.Entity<Bundle>().Property(b => b.Price).HasPrecision(18, 2);
             builder.Entity<Order>().Property(o => o.TotalPrice).HasPrecision(18, 2);
+            builder.Entity<Order>().HasIndex(o => o.DeliveryMethod);
 
             builder.Entity<PromoCode>()
            .HasIndex(p => p.Code)

@@ -80,6 +80,9 @@ namespace AlphaMode.Pages
                     .OrderBy(b => b.Size)
                     .ToListAsync(ct);
 
+                if (string.IsNullOrWhiteSpace(Order.Address))
+                    ModelState.AddModelError("Order.Address", "Въведете адрес/офис за доставка.");
+
                 if (!ModelState.IsValid)
                     return Page();
 
@@ -137,6 +140,7 @@ namespace AlphaMode.Pages
                     Telephone = Order.Telephone,
                     Email = Order.EmailAddress,
                     Address = Order.Address,
+                    DeliveryMethod = Order.DeliveryMethod,
                     BundleName = bundle.Name,
                     BasePrice = basePrice,
                     DiscountPercent = discountPercent,
@@ -160,6 +164,9 @@ namespace AlphaMode.Pages
                     );
                     var promoDisplay = vm.PromoCode ?? "-";
 
+                    var deliveryLabel = Order.DeliveryMethod == DeliveryMethod.EcontOffice ? "Офис на Еконт" : "Адрес";
+                    var deliveryValue = Order.Address;
+
                     var html = $@"
                                 <!DOCTYPE html>
                                 <html lang=""bg"">
@@ -180,6 +187,7 @@ namespace AlphaMode.Pages
                                         <tr><td style=""padding:6px 0;width:160px;color:#6b7280;"">Име</td><td style=""padding:6px 0;"">{vm.FullName}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Телефон</td><td style=""padding:6px 0;"">{vm.Telephone}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Е=mail</td><td style=""padding:6px 0;"">{vm.Email}</td></tr>
+                                        <tr><td style=""padding:6px 0;color:#6b7280;"">{deliveryLabel}</td><td style=""padding:6px 0;"">{deliveryValue}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Адрес</td><td style=""padding:6px 0;"">{vm.Address}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Промо код</td><td style=""padding:6px 0;"">{promoDisplay}</td></tr>
                                       </table>

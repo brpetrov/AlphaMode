@@ -77,7 +77,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   color: #dc3545;
 }
 
-/* Scope to the picker only */
 #bundlePicker .form-label {
   font-size: 1.05rem;
 }
@@ -97,10 +96,9 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
 /* Bigger radio hit target */
 #bundlePicker .form-check-input {
   transform: scale(1.25);
-  margin-top: 0.25rem; /* vertically align with text */
+  margin-top: 0.25rem;
 }
 
-/* Typography */
 #bundlePicker .form-check-label span:first-child {
   font-size: 1.05rem;
 }
@@ -109,7 +107,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   font-size: 1.05rem;
 }
 
-/* Hover / focus */
 #bundlePicker .form-check:hover {
   border-color: #ced4da;
   box-shadow: 0 0 0 0.15rem rgba(0, 0, 0, 0.03);
@@ -125,7 +122,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   border-color: #0d6efd !important;
 }
 
-/* Mobile: stack name/price, increase spacing */
 @media (max-width: 576px) {
   #bundlePicker .form-check {
     padding: 1rem 1.1rem;
@@ -145,7 +141,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     font-size: 1.1rem;
   }
 }
-/* ====== TICKER (no JS) ====== */
 .am-ticker {
   position: sticky;
   top: 0;
@@ -161,7 +156,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   white-space: nowrap;
 }
 
-/* The moving row is twice as wide (A + B) and we slide it by -50% */
 .am-ticker__row {
   display: flex;
   align-items: center;
@@ -183,7 +177,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   font-weight: 700;
 }
 
-/* Smooth, endless loop */
 @keyframes am-scroll {
   from {
     transform: translateX(0);
@@ -192,7 +185,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     transform: translateX(-50%);
   }
 }
-/* Pause when hovered (optional) */
 .am-ticker:hover .am-ticker__row {
   animation-play-state: paused;
 }
@@ -203,10 +195,9 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     padding: 0.75rem 0.75rem;
   }
 }
-/* === Compare: lock icon columns + perfect mobile alignment === */
 #am-compare3 .am-col-brand,
 #am-compare3 .am-col-other {
-  flex: 0 0 auto; /* don't shrink or wrap */
+  flex: 0 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -216,13 +207,10 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   width: 130px;
 }
 
-/* icon col 2 */
 #am-compare3 .am-col-other {
   width: 72px;
 }
 
-/* icon col 3 */
-/* Consistent icon box so rows align even with multi-line text */
 #am-compare3 .am-col-brand i,
 #am-compare3 .am-col-other i {
   display: inline-flex;
@@ -234,7 +222,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   font-size: 20px;
 }
 
-/* Slightly wider on md+ screens */
 @media (min-width: 768px) {
   #am-compare3 .am-col-brand {
     width: 160px;

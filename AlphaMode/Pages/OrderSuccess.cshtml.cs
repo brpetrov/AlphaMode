@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AlphaMode.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 
@@ -25,6 +26,9 @@ namespace AlphaMode.Pages
         public string Telephone { get; set; } = "";
         public string Email { get; set; } = "";
         public string Address { get; set; } = "";
+        public DeliveryMethod DeliveryMethod { get; set; }
+        public string DeliveryLabel => DeliveryMethod == DeliveryMethod.EcontOffice ? "Офис на Еконт" : "Адрес за доставка";
+        public string DeliveryValue => Address;
         public string BundleName { get; set; } = "";
         public decimal BasePrice { get; set; }
         public decimal DiscountPercent { get; set; }
