@@ -79,6 +79,8 @@ footer {
 }
 
 
+// Form Validation
+
 form .form-label {
     font-weight: 600;
 }
@@ -90,8 +92,10 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
 .validation-summary-errors, .field-validation-error {
     color: #dc3545;
 }
+// Form Validation END
 
 
+// Bundle Picker 
 #bundlePicker .form-label {
     font-size: 1.05rem;
 }
@@ -159,6 +163,8 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     }
 }
 
+// Bundle Picker END
+
 
 //Sticky banner
 .am-ticker {
@@ -217,6 +223,10 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     }
 }
 
+//Sticky banner END
+
+
+//Compare table Section
 #am-compare3 .am-col-brand,
 #am-compare3 .am-col-other {
     flex: 0 0 auto; 
@@ -253,8 +263,11 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     }
 }
 
+//Compare table Section END
 
-/* IMAGE Carousel Component */
+
+
+// IMAGE Carousel Component START
 .am-carousel .carousel {
     border-radius: 1rem;
     overflow: hidden;
@@ -299,11 +312,11 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
 .am-caption p {
     color: #fff;
 }
+// IMAGE Carousel Component END
 
 
 
 //PRODUCT GALLERY CAROUSEL
-
 #productGallery .carousel-item {
     height: clamp(340px, 58vh, 700px);
 }

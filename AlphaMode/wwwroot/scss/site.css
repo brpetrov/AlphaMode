@@ -228,7 +228,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     width: 90px;
   }
 }
-/* IMAGE Carousel Component */
 .am-carousel .carousel {
   border-radius: 1rem;
   overflow: hidden;
