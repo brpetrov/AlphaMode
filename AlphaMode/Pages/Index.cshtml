@@ -3,7 +3,7 @@
 @{
     Layout = "_PublicLayout";
 
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Alpha Mode";
 }
 
 
@@ -14,8 +14,49 @@
     <div class="container">
         <div class="row g-4 align-items-center">
             <div class="col-12 col-md-6 text-center mx-auto">
-                <div>
-                    <img src="~/images/alpha_mode_bottle.png" class="w-50 mx-auto d-block" />
+                <div id="productGallery"
+                     class="carousel slide"
+                     data-bs-ride="false"
+                     data-bs-interval="false"
+                     data-bs-touch="true"
+                     aria-label="Продуктова галерия">
+
+                    <!-- Dots -->
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Снимка 1"></button>
+                        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="1" aria-label="Снимка 2"></button>
+                        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="2" aria-label="Снимка 3"></button>
+                        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="3" aria-label="Снимка 4"></button>
+                    </div>
+
+                    <!-- Slides -->
+                    <div class="carousel-inner">
+                        <div class="carousel-item active position-relative">
+                            <img src="~/images/product/1.png" class="d-block w-100" alt="Alpha Mode продуктова снимка 1" loading="lazy" decoding="async">
+                        </div>
+
+                        <div class="carousel-item position-relative">
+                            <img src="~/images/product/2.jpg" class="d-block w-100" alt="Alpha Mode продуктова снимка 2" loading="lazy" decoding="async">
+                            <span class="am-badge">Препоръчано от <strong>фармацевти</strong></span>
+                        </div>
+
+                        <div class="carousel-item position-relative">
+                            <img src="~/images/product/3.jpg" class="d-block w-100" alt="Alpha Mode продуктова снимка 3" loading="lazy" decoding="async">
+                            <span class="am-badge">Използвано от <strong>трениращи</strong></span>
+                        </div>
+
+                        <div class="carousel-item position-relative">
+                            <img src="~/images/product/4.png" class="d-block w-100" alt="Alpha Mode продуктова снимка 4" loading="lazy" decoding="async">
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#productGallery" data-bs-slide="prev" aria-label="Предишна">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#productGallery" data-bs-slide="next" aria-label="Следваща">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
                 </div>
                 <div id="heroRating" class="mt-2 text-center" hidden>
                     <a href="#reviews-summary" class="text-decoration-none d-inline-flex align-items-center gap-2 h5">
@@ -28,7 +69,7 @@
             </div>
             <div class="col-12 col-md-6 px-5">
                 <div class="mx-auto mb-5">
-                    <p class="mb-4 h4"><span class="fw-bolder h2">ALPHA MODE</span> – ВЛЕЗ В РЕЖИМ НА ДОМИНАЦЯ</p>
+                    <p class="mb-4 h4"><span class="fw-bolder h2">ALPHA MODE</span> – ВЛЕЗ В РЕЖИМ НА ДОМИНАЦИЯ</p>
                     <ul class="am-bullets list-unstyled mb-4">
                         <li>✔ Повишат естествения <strong>тестостерон</strong> и физическата <strong>сила</strong></li>
                         <li>✔ Подобрят <strong>енергията</strong>, <strong>издръжливостта</strong> и <strong>концентрацията</strong></li>
@@ -73,40 +114,21 @@
 
 <partial name="_ImageCarousel" />
 
-<!-- Product intro section -->
-<section class="py-4 py-md-5 border-top">
+<section class="pb-5 pt-5 border-bottom border-top text-center bg-light">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-12">
-                <div class="p-4 p-md-5 bg-white rounded-4 shadow-sm">
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="badge bg-dark rounded-pill me-2">Alpha Mode</span>
-                        <h2 class="h4 fw-bold mb-0">Повече енергия. Повече фокус.</h2>
-                    </div>
+        <h6 class="display-6 fw-bold mb-2">100% ГАРАНЦИЯ ЗА УДОВЛЕТВОРЕНОСТ</h6>
+        <p class="lead text-muted mb-4">
+            Ако в рамките на <strong>30 дни</strong> от началото на приема на <strong>Alpha Mode</strong>
+            не видите резултати,<br /> ще ви <strong>върнем парите</strong> — без излишни въпроси.
+        </p>
+        <div class="col-lg-4 mx-auto p-3">
+            <img class="img-fluid mx-auto d-block" src="~/images/money-back.png" alt="30-дневна гаранция за връщане на парите" />
 
-                    <p class="lead mb-4">
-                        Създаден за мъже, които искат да възстановят енергията, силата, фокуса и сексуалната си функция.
-                    </p>
-
-                    <p class="lead mb-0">
-                        Формулата съчетава бабини зъби, боров прашец, ашваганда, женшен, цинк, витамин B6 и пиперин.
-                    </p>
-                </div>
-            </div>
         </div>
     </div>
 </section>
 
-<section class="pt-5 pb-3 text-center">
-    <div class="container">
-        <h2 class="fw-bold my-5">Готови ли сте за промяна?</h2>
-        <p class="mb-4 lead text-muted">
-        <p class="lead mt-3">Включи Alpha Mode. Стани версията на себе си, която командва!</p>
-        </p>
-    </div>
-</section>
-
-<section id="am-compare3" class="pb-5">
+<section id="am-compare3" class="pb-5 mt-5">
     <div class="container">
         <div class="card shadow-sm rounded-4 overflow-hidden col-lg-8 mx-auto">
 
@@ -174,24 +196,9 @@
     </div>
 </section>
 
-<section class="pb-5 pt-5 border-bottom border-top text-center bg-light">
-    <div class="container">
-        <h6 class="display-6 fw-bold mb-2">100% ГАРАНЦИЯ ЗА УДОВЛЕТВОРЕНОСТ</h6>
-        <p class="lead text-muted mb-4">
-            Ако в рамките на <strong>30 дни</strong> от началото на приема на <strong>Alpha Mode</strong>
-            не видите резултати,<br /> ще ви <strong>върнем парите</strong> — без излишни въпроси.
-        </p>
-        <div class="col-lg-4 mx-auto p-3">
-            <img class="img-fluid mx-auto d-block" src="~/images/money-back.png" alt="30-дневна гаранция за връщане на парите" />
-
-        </div>
-    </div>
-</section>
-
-<section class="pb-5 border-top">
+<section class="py-5 border-top">
     <div class="container text-center">
-        <h2 class="my-5 fw-bold">Още причини?</h2>
-        <div class="row g-4 justify-content-evenly">
+        <div class="row g-4 justify-content-evenly ">
             <div class="col-md-3">
                 <div class="p-4 h-100 border rounded shadow-sm bg-white">
                     <div class="display-6 mb-3"><img src="~/images/bulgaria_flag.png" style="width:45px" /></div>
@@ -211,13 +218,6 @@
                     <div class="display-6 mb-3">🔥</div>
                     <h5 class="fw-bold">Реални резултати</h5>
                     <p class="mb-0 small text-muted">За мъже, които искат да действат и да водят.</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="p-4 h-100 border rounded shadow-sm bg-white">
-                    <div class="display-6 mb-3">🚀</div>
-                    <h5 class="fw-bold">Създай мотивация</h5>
-                    <p class="mb-0 small text-muted">Не чакай мотивация – създай я сам. Включи Alpha Mode.</p>
                 </div>
             </div>
         </div>
@@ -292,6 +292,147 @@
     <p class="text-muted mt-5 text-center" style="font-size:11.5px;">
         *Продуктът не е лекарствено средство и не замества разнообразното хранене.
     </p>
+</section>
+
+<section id="am-compare" class="py-4 border-top border-bottom bg-white">
+    <div class="container-fluid px-1 px-md-4">
+        <div class="row row-cols-2 g-3 align-items-stretch col-lg-9 mx-auto">
+
+            <!-- BEFORE -->
+            <div class="col">
+                <figure class="d-flex flex-column h-100 rounded-3 overflow-hidden border m-0">
+                    <!-- light header -->
+                    <div class="bg-light text-dark text-uppercase fw-bold text-center py-3 small">
+                        Преди
+                    </div>
+
+                    <!-- image -->
+                    <div class="am-media">
+                        <img src="~/images/compare/before.png"
+                             alt="Преди — по-ниска енергия и мотивация"
+                             class="w-100 d-block" loading="lazy" decoding="async">
+                    </div>
+
+                    <!-- black footer with text -->
+                    <figcaption class="bg-dark text-white p-3">
+                        <ul class="mb-0 ps-3 small">
+                            <li>Постоянна умора и липса на енергия</li>
+                            <li>Намалено либидо и мотивация</li>
+                            <li>Повече мазнини, по-малко сила и фокус</li>
+                            <li>Неспокоен сън и бавно възстановяване</li>
+                            <li>Липса на воля и настроение</li>
+                        </ul>
+                    </figcaption>
+                </figure>
+            </div>
+
+            <!-- AFTER -->
+            <div class="col">
+                <figure class="d-flex flex-column h-100 rounded-3 overflow-hidden border m-0">
+                    <!-- light header (text stays dark as you asked) -->
+                    <div class="bg-dark text-light text-uppercase fw-bold text-center py-3 small">
+                        След <span class="text-white">Alpha Mode</span>
+                    </div>
+
+                    <!-- image -->
+                    <div class="am-media">
+                        <img src="~/images/compare/after.png"
+                             alt="След — повече енергия, тонус и увереност"
+                             class="w-100 d-block" loading="lazy" decoding="async">
+                    </div>
+
+                    <!-- black footer with text -->
+                    <figcaption class="bg-dark text-white p-3">
+                        <ul class="mb-0 ps-3 small">
+                            <li>Повече енергия, сила и издръжливост през деня</li>
+                            <li>По-високо либидо и самоувереност</li>
+                            <li>По-стегната форма и по-добър фокус</li>
+                            <li>Качествен сън и по-бързо възстановяване</li>
+                            <li>Ясна глава, спокойствие и вътрешен баланс</li>
+                        </ul>
+                    </figcaption>
+                </figure>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="am-why" class="py-5 border-top border-bottom bg-white">
+    <div class="container">
+        <div class="col-12 col-lg-8 mx-auto">
+
+            <!-- Red headline -->
+            <h3 class="text-center text-danger fw-bold text-uppercase mb-3">Знаете ли, че…</h3>
+
+            <div class="text-muted lh-base text-center mb-4">
+                <p class="mb-2">
+                    С напредването на <strong>възрастта</strong> мъжкият организъм естествено произвежда
+                    <strong>по-малко тестостерон</strong>.
+                </p>
+                <p class="mb-2">
+                    Този хормон е ключов за <strong>мускулната маса</strong>, <strong>плътността на костите</strong>,
+                    <strong>либидото</strong> и <strong>енергийните нива</strong>.
+                </p>
+                <p class="mb-0">
+                    Неговият спад може да доведе до <strong>намалено либидо</strong>, <strong>повишена телесна мазнина</strong>,
+                    <strong>ниска мотивация</strong> и <strong>проблеми със съня</strong>.
+                    Резултатът често е <strong>хронично ниска енергия</strong> и както <strong>умствена</strong>,
+                    така и <strong>физическа умора</strong>.
+                </p>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Green headline -->
+            <h3 class="text-center text-success fw-bold text-uppercase mb-2">Затова съчетахме…</h3>
+
+            <p class="text-center fw-semibold mb-3">
+                Натурална комбинация от <strong>Трибулус</strong>, <strong>Ашваганда</strong> и <strong>Женшен</strong>
+            </p>
+
+            <p class="text-center mb-4">
+                Научно подкрепена формула от <strong>три мощни билки</strong> — без изкуствени стимуланти и агресивни съставки.
+                Само <strong>чиста природна сила</strong>.
+            </p>
+
+            <!-- Bullet benefits -->
+            <ul class="list-unstyled text-start mx-auto" style="max-width: 720px;">
+                <li class="mb-2">⚡ Помага за по-лесно справяне с <strong>физическа</strong> и <strong>психическа умора</strong></li>
+                <li class="mb-2">❤️ Подпомага <strong>репродуктивната система</strong> и <strongлибидото></strong></li>
+                <li class="mb-2">💪 Подходящо за активно трениращи — подпомага <strong>по-бързо възстановяване</strong> след натоварване</li>
+                <li class="mb-0">🛡️ Подкрепя <strong>правилното функциониране на черния дроб</strong></li>
+            </ul>
+
+            <p class="text-success fw-semibold text-center mt-4 mb-0">
+                Три мощни билки, използвани от векове за <strong>мъжко здраве</strong>, <strong>издръжливост</strong> и <strong>висока енергия</strong>.
+            </p>
+
+        </div>
+    </div>
+</section>
+
+<section class="py-4 py-md-5 border-top">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="p-4 p-md-5 bg-white rounded-4 shadow-sm">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="badge bg-dark rounded-pill me-2">Alpha Mode</span>
+                        <h2 class="h4 fw-bold mb-0">Повече енергия. Повече фокус.</h2>
+                    </div>
+
+                    <p class="lead mb-4">
+                        Създаден за мъже, които искат да възстановят енергията, силата, фокуса и сексуалната си функция.
+                    </p>
+
+                    <p class="lead mb-0">
+                        Формулата съчетава бабини зъби, боров прашец, ашваганда, женшен, цинк, витамин B6 и пиперин.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 <section id="reviews-summary" class="my-5 py-5 bg-white">

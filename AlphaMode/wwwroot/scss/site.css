@@ -238,8 +238,8 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
 
 .am-slide-img {
   width: 100%;
-  height: 48vh;
-  max-height: 560px;
+  height: 85vh;
+  max-height: 900px;
   object-fit: cover;
   display: block;
   background-color: #000;
@@ -253,10 +253,10 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
 }
 @media (min-width: 1200px) {
   .am-slide-img {
-    height: 95vh;
-    max-height: 950px;
+    height: 90vh;
+    max-height: 900px;
     object-fit: cover;
-    object-position: center;
+    object-position: 50%;
   }
 }
 .am-caption {
@@ -272,4 +272,85 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
 .am-caption h5,
 .am-caption p {
   color: #fff;
+}
+
+/* Taller, responsive slides; images never crop */
+#productGallery .carousel-item {
+  height: clamp(340px, 58vh, 700px);
+}
+
+#productGallery .carousel-item > img {
+  height: 100%;
+  max-height: 650px !important;
+  width: 100%;
+  object-fit: contain;
+  background: transparent;
+}
+
+/* Dark, compact in-image controls; remove Bootstrap's side gradients */
+#productGallery .carousel-control-prev,
+#productGallery .carousel-control-next {
+  width: auto; /* avoid full-height overlay */
+  background: none !important; /* kill side gradient */
+  opacity: 1; /* solid */
+}
+
+#productGallery .carousel-control-prev-icon,
+#productGallery .carousel-control-next-icon {
+  background-color: #0c0c0d; /* near-black circle behind arrow */
+  border-radius: 999px;
+  padding: 10px; /* creates the circle */
+  background-size: 16px 16px; /* arrow size */
+  box-shadow: none;
+}
+
+/* Dark dots */
+#productGallery .carousel-indicators [data-bs-target] {
+  background-color: #0c0c0d;
+}
+
+/* Small in-image badges (slides 2 & 3) */
+#productGallery .am-badge {
+  position: absolute;
+  right: 5%;
+  bottom: 10%;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  #productGallery .am-badge {
+    font-size: 1.05rem;
+    padding: 7px 14px;
+  }
+}
+#am-compare .am-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4/5; /* keeps both panes aligned */
+  height: auto;
+  object-fit: contain;
+  background: #f8f9fa;
+}
+
+#am-compare .am-media {
+  aspect-ratio: 4/5;
+}
+
+#am-compare .am-media > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* swap to 'contain' if you want zero crop */
+}
+
+/* Slightly stronger borders on small screens to frame the cards */
+@media (max-width: 576px) {
+  #am-compare .border {
+    border-width: 2px;
+  }
 }

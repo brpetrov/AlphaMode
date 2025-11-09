@@ -2,7 +2,7 @@
 @model AlphaMode.Pages.OrderPageModel
 @{
     Layout = "_PublicLayout";
-    ViewData["Title"] = "Поръчка";
+    ViewData["Title"] = "Alpha Mode Поръчка";
 }
 
 <section class="py-5">
@@ -49,8 +49,8 @@
                 </div>
 
                 <div class="col-12">
-                    <label asp-for="Order.Address" class="form-label"></label>
-                    <input asp-for="Order.Address" class="form-control" />
+                    <label asp-for="Order.Address" class="form-label" id="addressLabel"></label>
+                    <input asp-for="Order.Address" class="form-control" id="addressInput" />
                     <span asp-validation-for="Order.Address" class="text-danger"></span>
                 </div>
 
