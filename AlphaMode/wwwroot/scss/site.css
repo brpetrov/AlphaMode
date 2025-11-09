@@ -93,7 +93,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   margin-top: 0.75rem;
 }
 
-/* Bigger radio hit target */
 #bundlePicker .form-check-input {
   transform: scale(1.25);
   margin-top: 0.25rem;
@@ -116,7 +115,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
 }
 
-/* Selected state border hint */
 #bundlePicker .form-check-input:checked ~ label,
 #bundlePicker .form-check-input:checked {
   border-color: #0d6efd !important;
@@ -230,7 +228,7 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     width: 90px;
   }
 }
-/* Carousel Component */
+/* IMAGE Carousel Component */
 .am-carousel .carousel {
   border-radius: 1rem;
   overflow: hidden;
@@ -274,7 +272,6 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   color: #fff;
 }
 
-/* Taller, responsive slides; images never crop */
 #productGallery .carousel-item {
   height: clamp(340px, 58vh, 700px);
 }
@@ -287,29 +284,26 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
   background: transparent;
 }
 
-/* Dark, compact in-image controls; remove Bootstrap's side gradients */
 #productGallery .carousel-control-prev,
 #productGallery .carousel-control-next {
-  width: auto; /* avoid full-height overlay */
-  background: none !important; /* kill side gradient */
-  opacity: 1; /* solid */
+  width: auto;
+  background: none !important;
+  opacity: 1;
 }
 
 #productGallery .carousel-control-prev-icon,
 #productGallery .carousel-control-next-icon {
-  background-color: #0c0c0d; /* near-black circle behind arrow */
+  background-color: #0c0c0d;
   border-radius: 999px;
-  padding: 10px; /* creates the circle */
-  background-size: 16px 16px; /* arrow size */
+  padding: 10px;
+  background-size: 16px 16px;
   box-shadow: none;
 }
 
-/* Dark dots */
 #productGallery .carousel-indicators [data-bs-target] {
   background-color: #0c0c0d;
 }
 
-/* Small in-image badges (slides 2 & 3) */
 #productGallery .am-badge {
   position: absolute;
   right: 5%;
@@ -329,28 +323,18 @@ input.input-validation-error, select.input-validation-error, textarea.input-vali
     padding: 7px 14px;
   }
 }
-#am-compare .am-img {
+#imgModal .am-fit {
   display: block;
-  width: 100%;
-  aspect-ratio: 4/5; /* keeps both panes aligned */
+  max-width: 100vw;
+  max-height: 100svh;
+  width: auto;
   height: auto;
   object-fit: contain;
-  background: #f8f9fa;
 }
 
-#am-compare .am-media {
-  aspect-ratio: 4/5;
-}
-
-#am-compare .am-media > img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* swap to 'contain' if you want zero crop */
-}
-
-/* Slightly stronger borders on small screens to frame the cards */
-@media (max-width: 576px) {
-  #am-compare .border {
-    border-width: 2px;
-  }
+#imgModal .modal-body,
+#imgModal .carousel,
+#imgModal .carousel-inner,
+#imgModal .carousel-item {
+  height: 100svh;
 }

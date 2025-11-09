@@ -14,50 +14,9 @@
     <div class="container">
         <div class="row g-4 align-items-center">
             <div class="col-12 col-md-6 text-center mx-auto">
-                <div id="productGallery"
-                     class="carousel slide"
-                     data-bs-ride="false"
-                     data-bs-interval="false"
-                     data-bs-touch="true"
-                     aria-label="Продуктова галерия">
 
-                    <!-- Dots -->
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Снимка 1"></button>
-                        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="1" aria-label="Снимка 2"></button>
-                        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="2" aria-label="Снимка 3"></button>
-                        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="3" aria-label="Снимка 4"></button>
-                    </div>
+                <partial name="_ProductCarousel" />
 
-                    <!-- Slides -->
-                    <div class="carousel-inner">
-                        <div class="carousel-item active position-relative">
-                            <img src="~/images/product/1.png" class="d-block w-100" alt="Alpha Mode продуктова снимка 1" loading="lazy" decoding="async">
-                        </div>
-
-                        <div class="carousel-item position-relative">
-                            <img src="~/images/product/2.jpg" class="d-block w-100" alt="Alpha Mode продуктова снимка 2" loading="lazy" decoding="async">
-                            <span class="am-badge">Препоръчано от <strong>фармацевти</strong></span>
-                        </div>
-
-                        <div class="carousel-item position-relative">
-                            <img src="~/images/product/3.jpg" class="d-block w-100" alt="Alpha Mode продуктова снимка 3" loading="lazy" decoding="async">
-                            <span class="am-badge">Използвано от <strong>трениращи</strong></span>
-                        </div>
-
-                        <div class="carousel-item position-relative">
-                            <img src="~/images/product/4.png" class="d-block w-100" alt="Alpha Mode продуктова снимка 4" loading="lazy" decoding="async">
-                        </div>
-                    </div>
-
-                    <!-- Controls -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#productGallery" data-bs-slide="prev" aria-label="Предишна">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#productGallery" data-bs-slide="next" aria-label="Следваща">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    </button>
-                </div>
                 <div id="heroRating" class="mt-2 text-center" hidden>
                     <a href="#reviews-summary" class="text-decoration-none d-inline-flex align-items-center gap-2 h5">
                         <span id="heroStars" class="text-warning fs-5" aria-hidden="true">★★★★★</span>
@@ -294,69 +253,63 @@
     </p>
 </section>
 
-<section id="am-compare" class="py-4 border-top border-bottom bg-white">
-    <div class="container-fluid px-1 px-md-4">
-        <div class="row row-cols-2 g-3 align-items-stretch col-lg-9 mx-auto">
+<section id="am-compare" class="py-4 border-top border-bottom">
+    <div class="container px-1">
+        <div class="row row-cols-2 g-3 justify-content-center align-items-stretch px-0">
 
-            <!-- BEFORE -->
-            <div class="col">
-                <figure class="d-flex flex-column h-100 rounded-3 overflow-hidden border m-0">
-                    <!-- light header -->
-                    <div class="bg-light text-dark text-uppercase fw-bold text-center py-3 small">
-                        Преди
+            <!-- LEFT (light) -->
+            <div class="col col-lg-5">
+                <div class="card h-100 bg-light text-dark shadow-sm d-flex flex-column rounded">
+                    <div class="card-header bg-white text-dark text-uppercase fw-bold text-center py-3 border-0">
+                        ПРЕДИ
                     </div>
 
-                    <!-- image -->
-                    <div class="am-media">
-                        <img src="~/images/compare/before.png"
-                             alt="Преди — по-ниска енергия и мотивация"
-                             class="w-100 d-block" loading="lazy" decoding="async">
+                    <div class="card-body p-0">
+                        <!-- same media height on both cards -->
+                        <div class="ratio" style="--bs-aspect-ratio:125%;">
+                            <img src="~/images/compare/before.png" class="w-100 h-100" style="object-fit:cover;" alt="">
+                        </div>
+                        <div class="p-3 bg-white text-dark border-0">
+                            <ul class="ps-3 my-0 small" style="min-height: 11rem;">
+                                <li>Постоянна умора и липса на енергия</li>
+                                <li>Намалено либидо и мотивация</li>
+                                <li>По-малко сила и фокус, по-бавно възстановяване</li>
+                                <li>Неспокоен сън</li>
+                            </ul>
+                        </div>
                     </div>
-
-                    <!-- black footer with text -->
-                    <figcaption class="bg-dark text-white p-3">
-                        <ul class="mb-0 ps-3 small">
-                            <li>Постоянна умора и липса на енергия</li>
-                            <li>Намалено либидо и мотивация</li>
-                            <li>Повече мазнини, по-малко сила и фокус</li>
-                            <li>Неспокоен сън и бавно възстановяване</li>
-                            <li>Липса на воля и настроение</li>
-                        </ul>
-                    </figcaption>
-                </figure>
+                </div>
             </div>
 
-            <!-- AFTER -->
-            <div class="col">
-                <figure class="d-flex flex-column h-100 rounded-3 overflow-hidden border m-0">
-                    <!-- light header (text stays dark as you asked) -->
-                    <div class="bg-dark text-light text-uppercase fw-bold text-center py-3 small">
-                        След <span class="text-white">Alpha Mode</span>
+            <!-- RIGHT (dark) -->
+            <div class="col col-lg-5">
+                <div class="card h-100 bg-dark text-light shadow-sm d-flex flex-column rounded">
+                    <div class="card-header bg-dark text-light text-uppercase fw-bold text-center py-3 border-0">
+                        СЛЕД 
                     </div>
 
-                    <!-- image -->
-                    <div class="am-media">
-                        <img src="~/images/compare/after.png"
-                             alt="След — повече енергия, тонус и увереност"
-                             class="w-100 d-block" loading="lazy" decoding="async">
+                    <div class="card-body p-0">
+                        <div class="ratio" style="--bs-aspect-ratio:125%;">
+                            <img src="~/images/compare/after.png" class="w-100 h-100" style="object-fit:cover;" alt="">
+                        </div>
+                        <div class="bg-dark text-light border-0 p-3">
+                            <ul class="ps-3 my-0 small" style="min-height: 11rem;">
+                                <li>Повече енергия, сила и издръжливост през деня</li>
+                                <li>По-високо либидо и самоувереност</li>
+                                <li>По-стегната форма и по-добър фокус</li>
+                                <li>Качествен сън и по-бързо възстановяване</li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <!-- black footer with text -->
-                    <figcaption class="bg-dark text-white p-3">
-                        <ul class="mb-0 ps-3 small">
-                            <li>Повече енергия, сила и издръжливост през деня</li>
-                            <li>По-високо либидо и самоувереност</li>
-                            <li>По-стегната форма и по-добър фокус</li>
-                            <li>Качествен сън и по-бързо възстановяване</li>
-                            <li>Ясна глава, спокойствие и вътрешен баланс</li>
-                        </ul>
-                    </figcaption>
-                </figure>
+                    
+                </div>
             </div>
 
         </div>
     </div>
 </section>
+
 
 <section id="am-why" class="py-5 border-top border-bottom bg-white">
     <div class="container">

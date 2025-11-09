@@ -1,0 +1,125 @@
+﻿@* Product gallery + fullscreen modal carousel (Bootstrap 5) *@
+<div id="productGallery"
+     class="carousel slide"
+     data-bs-ride="false"
+     data-bs-interval="false"
+     data-bs-touch="true"
+     aria-label="Продуктова галерия">
+
+    <!-- Dots -->
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Снимка 1"></button>
+        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="1" aria-label="Снимка 2"></button>
+        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="2" aria-label="Снимка 3"></button>
+        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="3" aria-label="Снимка 4"></button>
+        <button type="button" data-bs-target="#productGallery" data-bs-slide-to="4" aria-label="Снимка 5"></button>
+    </div>
+
+    <!-- Slides -->
+    <div class="carousel-inner">
+        <div class="carousel-item active position-relative">
+            <img src="~/images/product/1.png" class="d-block w-100 am-zoom" alt="Alpha Mode продуктова снимка 1" loading="lazy" decoding="async">
+        </div>
+
+        <div class="carousel-item position-relative">
+            <img src="~/images/product/2.jpg" class="d-block w-100 am-zoom" alt="Alpha Mode продуктова снимка 2" loading="lazy" decoding="async">
+            <span class="am-badge">Препоръчано от <strong>фармацевти</strong></span>
+        </div>
+
+        <div class="carousel-item position-relative">
+            <img src="~/images/product/3.jpg" class="d-block w-100 am-zoom" alt="Alpha Mode продуктова снимка 3" loading="lazy" decoding="async">
+            <span class="am-badge">Използвано от <strong>трениращи</strong></span>
+        </div>
+
+        <div class="carousel-item position-relative">
+            <img src="~/images/product/4.png" class="d-block w-100 am-zoom" alt="Alpha Mode продуктова снимка 4" loading="lazy" decoding="async">
+        </div>
+
+        <div class="carousel-item position-relative">
+            <img src="~/images/product/label.png" class="d-block w-100 am-zoom" alt="Alpha Mode продуктова снимка 5" loading="lazy" decoding="async">
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#productGallery" data-bs-slide="prev" aria-label="Предишна">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#productGallery" data-bs-slide="next" aria-label="Следваща">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    </button>
+</div>
+
+<!-- Fullscreen Modal + Bootstrap Carousel (for zoom view) -->
+<div class="modal fade" id="imgModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen m-0">
+        <div class="modal-content bg-black">
+            <div class="modal-body p-0">
+                <button type="button" class="btn-close btn-close-white position-absolute end-0 m-3 z-3"
+                        data-bs-dismiss="modal" aria-label="Затвори"></button>
+
+                <div id="imgModalCarousel" class="carousel slide h-100" data-bs-interval="false" data-bs-touch="true" data-bs-wrap="true">
+                    <div class="carousel-inner h-100">
+                        <div class="carousel-item h-100 active">
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <img src="~/images/product/1.png" class="d-block mx-auto img-fluid"
+                                     style="max-height:100vh;object-fit:contain;" alt="">
+                            </div>
+                        </div>
+                        <div class="carousel-item h-100">
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <img src="~/images/product/2.jpg" class="d-block mx-auto img-fluid"
+                                     style="max-height:100vh;object-fit:contain;" alt="">
+                            </div>
+                        </div>
+                        <div class="carousel-item h-100">
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <img src="~/images/product/3.jpg" class="d-block mx-auto img-fluid"
+                                     style="max-height:100vh;object-fit:contain;" alt="">
+                            </div>
+                        </div>
+                        <div class="carousel-item h-100">
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <img src="~/images/product/4.png" class="d-block mx-auto img-fluid"
+                                     style="max-height:100vh;object-fit:contain;" alt="">
+                            </div>
+                        </div>
+                        <div class="carousel-item h-100">
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <img src="~/images/product/label.png" class="d-block mx-auto img-fluid"
+                                     style="max-height:100vh;object-fit:contain;" alt="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#imgModalCarousel" data-bs-slide="prev" aria-label="Предишна">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#imgModalCarousel" data-bs-slide="next" aria-label="Следваща">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (!window.bootstrap) return;
+
+      const gallery = document.getElementById('productGallery');
+      const modalEl = document.getElementById('imgModal');
+      const carEl   = document.getElementById('imgModalCarousel');
+      if (!gallery || !modalEl || !carEl) return;
+
+      const modal = new bootstrap.Modal(modalEl);
+      const car   = new bootstrap.Carousel(carEl, { interval: false, touch: true, wrap: true });
+
+      const thumbs = Array.from(gallery.querySelectorAll('img'));
+      thumbs.forEach((img, i) => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', () => { modal.show(); car.to(i); }, { passive: true });
+      });
+    });
+</script>
