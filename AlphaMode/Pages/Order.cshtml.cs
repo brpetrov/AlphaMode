@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 
 namespace AlphaMode.Pages
@@ -119,6 +121,54 @@ namespace AlphaMode.Pages
                 {
                     return Page();
                 }
+
+
+                // === Anti-abuse: max 3 orders / month by IP OR Device ===
+
+                // 1) Identify source
+                var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+                var deviceId = Request.Cookies["am_device"];
+                if (string.IsNullOrWhiteSpace(deviceId))
+                {
+                    deviceId = Guid.NewGuid().ToString();
+                    Response.Cookies.Append("am_device", deviceId, new CookieOptions
+                    {
+                        Expires = DateTimeOffset.UtcNow.AddYears(2),
+                        HttpOnly = false,
+                        IsEssential = true,
+                        SameSite = SameSiteMode.Lax
+                    });
+                }
+
+                // 2) Monthly window (UTC)
+                var now = DateTime.UtcNow;
+                var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+                var nextMonth = monthStart.AddMonths(1);
+
+                // 3) Count orders this month matching IP OR DeviceId
+                const int MonthlyCap = 3;
+                var monthCount = await _db.Orders.CountAsync(o =>
+                    o.CreatedUtc >= monthStart && o.CreatedUtc < nextMonth &&
+                    ((ip != null && o.IpAddress == ip) || (deviceId != null && o.DeviceId == deviceId)),
+                    ct);
+
+                // 4) Enforce
+                if (monthCount >= MonthlyCap)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "Достигнахте лимита от 3 поръчки за този месец.");
+                    return Page();
+                }
+
+                // 5) Persist source for this order (so it counts next time)
+                Order.IpAddress = ip;
+                Order.DeviceId = deviceId;
+
+                // 6) Store CustomerKey for future use (not used to block now)
+                var phoneNorm = NormalizeBgPhone(Order.Telephone);
+                var emailNorm = NormalizeEmail(Order.EmailAddress);
+                Order.CustomerKey = Sha256($"{phoneNorm}|{emailNorm}");
+                // === END Anti-abuse =======================================
 
                 decimal discountPercent = PromoPercent;
 
@@ -256,7 +306,23 @@ namespace AlphaMode.Pages
                 return Page();
             }
         }
-    }
 
+        static string NormalizeBgPhone(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return "";
+            var d = new string(s.Where(char.IsDigit).ToArray());
+            if (d.StartsWith("0")) d = "359" + d[1..];  // 0XXXXXXXXX -> +359XXXXXXXXX
+            if (!d.StartsWith("359")) d = "359" + d;    // fallback
+            return "+" + d;
+        }
+        static string NormalizeEmail(string s) => (s ?? "").Trim().ToLowerInvariant();
+
+        static string Sha256(string s)
+        {
+            using var sha = SHA256.Create();
+            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(s ?? ""));
+            return string.Concat(bytes.Select(b => b.ToString("x2")));
+        }
+    }
 
 }

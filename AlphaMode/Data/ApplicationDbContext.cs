@@ -24,6 +24,9 @@ namespace AlphaMode.Data
             builder.Entity<Bundle>().Property(b => b.Price).HasPrecision(18, 2);
             builder.Entity<Order>().Property(o => o.TotalPrice).HasPrecision(18, 2);
             builder.Entity<Order>().HasIndex(o => o.DeliveryMethod);
+            builder.Entity<Order>().HasIndex(o => new { o.IpAddress, o.CreatedUtc });
+            builder.Entity<Order>().HasIndex(o => new { o.DeviceId, o.CreatedUtc });
+            builder.Entity<Order>().HasIndex(o => new { o.CustomerKey, o.CreatedUtc });
 
             builder.Entity<PromoCode>()
            .HasIndex(p => p.Code)

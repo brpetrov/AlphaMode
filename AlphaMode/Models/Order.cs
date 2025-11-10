@@ -80,5 +80,10 @@ namespace AlphaMode.Models
         public OrderStatus Status { get; set; } = OrderStatus.New;
         public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedUtc { get; set; }
+
+        //Security
+        [MaxLength(36)] public string? DeviceId { get; set; }   // GUID from cookie
+        [MaxLength(64)] public string? IpAddress { get; set; }   // remote IP
+        [MaxLength(64)] public string? CustomerKey { get; set; }  // SHA-256(normalizedPhone|normalizedEmail)
     }
 }
