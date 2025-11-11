@@ -30,10 +30,10 @@
                 <div class="mx-auto mb-5">
                     <p class="mb-4 h4"><span class="fw-bolder h2">ALPHA MODE</span> – ВЛЕЗ В РЕЖИМ НА ДОМИНАЦИЯ</p>
                     <ul class="am-bullets list-unstyled mb-4">
-                        <li>✔ Повишат естествения <strong>тестостерон</strong> и физическата <strong>сила</strong></li>
-                        <li>✔ Подобрят <strong>енергията</strong>, <strong>издръжливостта</strong> и <strong>концентрацията</strong></li>
-                        <li>✔ Подкрепят <strong>либидото</strong> и <strong>сексуалната функция</strong></li>
-                        <li>✔ Намалят <strong>стреса</strong> и ускорят <strong>възстановяването</strong></li>
+                        <li>✔ Повишава естествения <strong>тестостерон</strong> и физическата <strong>сила</strong></li>
+                        <li>✔ Подобрява <strong>енергията</strong>, <strong>издръжливостта</strong> и <strong>концентрацията</strong></li>
+                        <li>✔ Подкрепя <strong>либидото</strong> и <strong>сексуалната функция</strong></li>
+                        <li>✔ Намалява <strong>стреса</strong> и ускорява <strong>възстановяването</strong></li>
                     </ul>
                 </div>
 
@@ -352,7 +352,7 @@
             <!-- Bullet benefits -->
             <ul class="list-unstyled text-start mx-auto" style="max-width: 720px;">
                 <li class="mb-2">⚡ Помага за по-лесно справяне с <strong>физическа</strong> и <strong>психическа умора</strong></li>
-                <li class="mb-2">❤️ Подпомага <strong>репродуктивната система</strong> и <strongлибидото></strong></li>
+                <li class="mb-2">❤️ Подпомага <strong>репродуктивната система</strong> и <strong>либидото</strong></li>
                 <li class="mb-2">💪 Подходящо за активно трениращи — подпомага <strong>по-бързо възстановяване</strong> след натоварване</li>
                 <li class="mb-0">🛡️ Подкрепя <strong>правилното функциониране на черния дроб</strong></li>
             </ul>
@@ -516,4 +516,21 @@
         if (e.target && e.target.name === 'bundle') updateCta();
       });
     })();
+
+
+    document.getElementById('orderCta')?.addEventListener('click', function (ev) {
+      const selected = document.querySelector('input[name="bundle"]:checked') ||
+                       document.getElementById('bundleSelect')?.options[document.getElementById('bundleSelect').selectedIndex];
+      const id = selected?.value ?? null;
+      const price = selected?.dataset?.price ? parseFloat(selected.dataset.price) : undefined;
+
+      if (window.fbq && id) {
+        fbq('track', 'AddToCart', {
+          content_ids: [id],
+          content_type: 'product',
+          value: price ?? 0,
+          currency: 'BGN'
+        });
+      }
+    });
 </script>

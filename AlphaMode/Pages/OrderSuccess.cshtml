@@ -86,8 +86,21 @@
 </section>
 
 @section Scripts {
-    <script>
-        // Optional: auto-scroll to summary
-        // window.scrollTo({ top: 0, behavior: 'smooth' });
-    </script>
+    @* Fire Purchase only when we actually have order data *@
+    @if (Model.View != null)
+    {
+        <script>
+            (function () {
+                var value = Number('@Model.View.FinalTotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)');
+                if (!isFinite(value)) value = 0;
+
+                if (window.fbq) {
+                    fbq('track', 'Purchase', {
+                        value: value,
+                        currency: 'BGN'
+                    });
+                }
+            })();
+        </script>
+    }
 }

@@ -250,5 +250,69 @@
           recalc();
         }
         })();
+
+
+        //PIXEL EVENTS
+
+        (function () {
+            // --- small helpers that reuse your existing elements ---
+            function getSelectedBundle() {
+                var sel = document.getElementById('bundleSelect');
+                if (!sel) return { id: null, price: 0 };
+                var opt = sel.options[sel.selectedIndex];
+                var id = opt?.value || null;
+                var price = opt?.dataset?.price ? parseFloat(opt.dataset.price.replace(',', '.')) : 0;
+                return { id: id, price: isFinite(price) ? price : 0 };
+            }
+            function getDiscountPercent() {
+                var el = document.getElementById('discountPercent');
+                if (!el) return 0;
+                var p = parseFloat(el.textContent.replace(',', '.'));
+                return isFinite(p) ? p : 0;
+            }
+            function getFinalTotal() {
+                var el = document.getElementById('finalTotal');
+                if (!el) return 0;
+                var v = parseFloat(el.textContent.replace(',', '.'));
+                return isFinite(v) ? v : 0;
+            }
+
+            // --- 1) Fire InitiateCheckout ONCE when landing on the Order page ---
+            var firedInit = false;
+            function fireInitiateCheckoutOnce() {
+                if (firedInit) return;
+                firedInit = true;
+
+                var b = getSelectedBundle();
+                if (window.fbq) {
+                    fbq('track', 'InitiateCheckout', {
+                        value: b.price,               // base price (before discount)
+                        currency: 'BGN',
+                        num_items: 1,
+                        content_type: 'product',
+                        content_ids: b.id ? [b.id] : undefined
+                    });
+                }
+            }
+            fireInitiateCheckoutOnce();
+
+            // Optional: if user changes bundle, log ViewContent (lightweight signal)
+            var bs = document.getElementById('bundleSelect');
+            if (bs) {
+                bs.addEventListener('change', function () {
+                    var b = getSelectedBundle();
+                    if (window.fbq) {
+                        fbq('track', 'ViewContent', {
+                            value: b.price,
+                            currency: 'BGN',
+                            content_type: 'product',
+                            content_ids: b.id ? [b.id] : undefined
+                        });
+                    }
+                });
+            }
+        })();
+
     </script>
 }
+
