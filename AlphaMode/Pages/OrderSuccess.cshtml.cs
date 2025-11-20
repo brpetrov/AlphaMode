@@ -26,6 +26,7 @@ namespace AlphaMode.Pages
         public string Telephone { get; set; } = "";
         public string Email { get; set; } = "";
         public string Address { get; set; } = "";
+        public string Town { get; set; } = "";
         public DeliveryMethod DeliveryMethod { get; set; }
         public string DeliveryLabel => DeliveryMethod == DeliveryMethod.EcontOffice ? "Офис на Еконт" : "Адрес за доставка";
         public string DeliveryValue => Address;

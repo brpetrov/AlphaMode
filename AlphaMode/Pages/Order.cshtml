@@ -54,6 +54,12 @@
                     <span asp-validation-for="Order.Address" class="text-danger"></span>
                 </div>
 
+                <div class="col-12">
+                    <label asp-for="Order.Town" class="form-label"></label>
+                    <input asp-for="Order.Town" class="form-control" />
+                    <span asp-validation-for="Order.Town" class="text-danger"></span>
+                </div>
+
                 <div class="col-md-6">
                     <label asp-for="Order.Telephone" class="form-label"></label>
                     <input asp-for="Order.Telephone" class="form-control" />
@@ -66,11 +72,11 @@
                     <span asp-validation-for="Order.EmailAddress" class="text-danger"></span>
                 </div>
 
-                <div class="col-md-6">
+                @* <div class="col-md-6">
                     <label asp-for="Order.DateOfBirth" class="form-label"></label>
                     <input asp-for="Order.DateOfBirth" class="form-control" type="date" />
                     <span asp-validation-for="Order.DateOfBirth" class="text-danger"></span>
-                </div>
+                </div> *@
 
                 <div class="col-md-6">
                     <label asp-for="Order.BundleId" class="form-label">Количество</label>
@@ -168,7 +174,7 @@
 
           let currentPercent = 0;
 
-                 function sync() {
+        function sync() {
           const isEcont = econt?.checked;
           if (isEcont) {
             label.textContent = "Офис на Еконт";

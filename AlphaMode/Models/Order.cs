@@ -49,6 +49,9 @@ namespace AlphaMode.Models
         [Required, Display(Name = "Адрес"), StringLength(200)]
         public string Address { get; set; } = default!;
 
+        [Required, Display(Name = "Населено Място (Град / Село)"), StringLength(80)]
+        public string Town { get; set; } = default!;
+
         [Required, Display(Name = "Телефон"), Phone, StringLength(30)]
         public string Telephone { get; set; } = default!;
 

@@ -38,7 +38,17 @@
                     </td>
                     <td>@o.FullName</td>
                     <td>@o.Telephone</td>
-                    <td>@o.Address</td>
+                    <td>
+                        @{
+                            var parts = new[]
+                            {
+                                string.IsNullOrWhiteSpace(o.Town) ? null : o.Town.Trim(),
+                                string.IsNullOrWhiteSpace(o.Address) ? null : o.Address.Trim()
+                            }
+                            .Where(x => !string.IsNullOrEmpty(x));
+                        }
+                        @string.Join(", ", parts)
+                    </td>
                     <td>
                         <span class="badge @(o.DeliveryMethod == DeliveryMethod.EcontOffice ? "bg-dark" : "bg-secondary")">
                             @AlphaMode.Helpers.DisplayHelper.GetEnumDisplayName(o.DeliveryMethod)

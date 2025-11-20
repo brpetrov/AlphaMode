@@ -15,7 +15,7 @@ namespace AlphaMode.Pages
     {
         private readonly IOrderService _orders;
         private readonly ApplicationDbContext _db;
-        private readonly IEmailSender _email;    
+        private readonly IEmailSender _email;
         private readonly ILogger<OrderPageModel> _log;
 
         [TempData] public string? OrderSummary { get; set; }
@@ -24,7 +24,7 @@ namespace AlphaMode.Pages
         {
             _orders = orders;
             _db = db;
-            _email = email;                   
+            _email = email;
             _log = log;
         }
 
@@ -84,6 +84,9 @@ namespace AlphaMode.Pages
 
                 if (string.IsNullOrWhiteSpace(Order.Address))
                     ModelState.AddModelError("Order.Address", "Въведете адрес/офис за доставка.");
+
+                if (string.IsNullOrWhiteSpace(Order.Town))
+                    ModelState.AddModelError("Order.Town", "Въведете населено място (град/село).");
 
                 if (!ModelState.IsValid)
                     return Page();
@@ -190,6 +193,7 @@ namespace AlphaMode.Pages
                     Telephone = Order.Telephone,
                     Email = Order.EmailAddress,
                     Address = Order.Address,
+                    Town = Order.Town,
                     DeliveryMethod = Order.DeliveryMethod,
                     BundleName = bundle.Name,
                     BasePrice = basePrice,
@@ -239,6 +243,7 @@ namespace AlphaMode.Pages
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Е=mail</td><td style=""padding:6px 0;"">{vm.Email}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">{deliveryLabel}</td><td style=""padding:6px 0;"">{deliveryValue}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Адрес</td><td style=""padding:6px 0;"">{vm.Address}</td></tr>
+                                        <tr><td style=""padding:6px 0;color:#6b7280;"">Град</td><td style=""padding:6px 0;"">{vm.Town}</td></tr>
                                         <tr><td style=""padding:6px 0;color:#6b7280;"">Промо код</td><td style=""padding:6px 0;"">{promoDisplay}</td></tr>
                                       </table>
                                     </div>

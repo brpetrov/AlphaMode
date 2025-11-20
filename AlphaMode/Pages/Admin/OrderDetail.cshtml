@@ -30,6 +30,7 @@
                         <tr><td class="text-muted" style="width:220px;">Име</td><td>@Model.Form.FullName</td></tr>
                         <tr><td class="text-muted">Телефон</td><td>@Model.Form.Telephone</td></tr>
                         <tr><td class="text-muted">Адрес</td><td>@Model.Form.Address</td></tr>
+                        <tr><td class="text-muted">Населено Място</td><td>@Model.Form.Town</td></tr>
                         <tr>
                             <td class="text-muted">Доставка</td>
                             <td>
@@ -39,7 +40,7 @@
                             </td>
                         </tr>
                         <tr><td class="text-muted">Имейл</td><td>@Model.Form.Email</td></tr>
-                        <tr><td class="text-muted">Дата на раждане</td><td>@(Model.Form.DateOfBirth?.ToString("dd.MM.yyyy") ?? "-")</td></tr>
+                        @* <tr><td class="text-muted">Дата на раждане</td><td>@(Model.Form.DateOfBirth?.ToString("dd.MM.yyyy") ?? "-")</td></tr> *@
                     </tbody>
                 </table>
             </div>
