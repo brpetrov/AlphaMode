@@ -16,6 +16,10 @@ namespace AlphaMode.Pages.Admin
         public List<StatusBucket> StatusCounts { get; set; } = new();
         public List<Order> Recent { get; set; } = new();
 
+        // selected month context
+        public int SelectedYear { get; set; }
+        public int SelectedMonth { get; set; }
+
         public class KpiView
         {
             public int TodayOrders { get; set; }
@@ -41,45 +45,70 @@ namespace AlphaMode.Pages.Admin
             _ => "bg-secondary"
         };
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? year, int? month)
         {
             var nowLocal = DateTime.Now;
-            var todayLocal = nowLocal.Date;
-            var firstOfMonthLocal = new DateTime(nowLocal.Year, nowLocal.Month, 1);
 
-            // Convert to UTC for comparisons against CreatedUtc
+            // determine selected month (query params; default = current month)
+            SelectedYear = year ?? nowLocal.Year;
+            SelectedMonth = month ?? nowLocal.Month;
+
+            var monthStartLocal = new DateTime(SelectedYear, SelectedMonth, 1);
+            var nextMonthStartLocal = monthStartLocal.AddMonths(1);
+
+            // UTC ranges for CreatedUtc
+            var monthStartUtc = monthStartLocal.ToUniversalTime();
+            var nextMonthStartUtc = nextMonthStartLocal.ToUniversalTime();
+
+            var todayLocal = nowLocal.Date;
             var todayUtc = todayLocal.ToUniversalTime();
             var tomorrowUtc = todayLocal.AddDays(1).ToUniversalTime();
-            var monthStartUtc = firstOfMonthLocal.ToUniversalTime();
-            var nextMonthStartUtc = firstOfMonthLocal.AddMonths(1).ToUniversalTime();
 
-            // KPIs
+            // 1) Orders created today (all statuses)
             Kpi.TodayOrders = await _db.Orders
                 .CountAsync(o => o.CreatedUtc >= todayUtc && o.CreatedUtc < tomorrowUtc);
 
+            // 2) Revenue for selected month – only Delivered
             Kpi.MonthRevenue = await _db.Orders
-                .Where(o => o.CreatedUtc >= monthStartUtc && o.CreatedUtc < nextMonthStartUtc)
+                .Where(o =>
+                    o.Status == OrderStatus.Delivered &&
+                    o.CreatedUtc >= monthStartUtc &&
+                    o.CreatedUtc < nextMonthStartUtc)
                 .SumAsync(o => (decimal?)o.TotalPrice) ?? 0m;
 
-            Kpi.NewCount = await _db.Orders.CountAsync(o => o.Status == OrderStatus.New);
+            // 3) New orders (global "to do" queue)
+            Kpi.NewCount = await _db.Orders
+                .CountAsync(o => o.Status == OrderStatus.New);
 
-            Kpi.DeliveredThisMonth = await _db.Orders.CountAsync(o =>
-                o.Status == OrderStatus.Delivered &&
-                o.CreatedUtc >= monthStartUtc && o.CreatedUtc < nextMonthStartUtc);
+            // 4) Delivered orders in selected month
+            Kpi.DeliveredThisMonth = await _db.Orders
+                .CountAsync(o =>
+                    o.Status == OrderStatus.Delivered &&
+                    o.CreatedUtc >= monthStartUtc &&
+                    o.CreatedUtc < nextMonthStartUtc);
 
-            // Status counts (last 30 days)
-            var fromUtc = DateTime.UtcNow.AddDays(-30);
-            StatusCounts = await _db.Orders
-                .Where(o => o.CreatedUtc >= fromUtc)
+            // Status counts for selected month
+            var rawBuckets = await _db.Orders
+                .Where(o => o.CreatedUtc >= monthStartUtc && o.CreatedUtc < nextMonthStartUtc)
                 .GroupBy(o => o.Status)
-                .Select(g => new StatusBucket { Status = g.Key, Count = g.Count() })
-                .OrderByDescending(x => x.Count)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
                 .ToListAsync();
 
-            // Recent 10 orders
+            // ensure all statuses appear (even with 0)
+            StatusCounts = Enum.GetValues<OrderStatus>()
+                .Select(st => new StatusBucket
+                {
+                    Status = st,
+                    Count = rawBuckets.FirstOrDefault(x => x.Status == st)?.Count ?? 0
+                })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+
+            // Recent 10 orders for selected month
             Recent = await _db.Orders
                 .AsNoTracking()
                 .Include(o => o.Bundle)
+                .Where(o => o.CreatedUtc >= monthStartUtc && o.CreatedUtc < nextMonthStartUtc)
                 .OrderByDescending(o => o.CreatedUtc)
                 .Take(10)
                 .ToListAsync();

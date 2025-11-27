@@ -161,7 +161,7 @@
 @section Scripts {
     <script>
         $(function () {
-                  const COL = {
+        const COL = {
           ID: 0,
           NAME: 1,
           PHONE: 2,
@@ -182,7 +182,7 @@
             .appendTo('#ordersTable thead');
 
           const table = $('#ordersTable').DataTable({
-            order: [[COL.ID, 'desc']],
+            order: [[COL.DATE, 'desc']],
             pageLength: 25,
             orderCellsTop: true,        // <— sort handlers on the TOP header row only
             initComplete: function () {

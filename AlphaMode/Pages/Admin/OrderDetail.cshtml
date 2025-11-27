@@ -14,6 +14,10 @@
 {
     <div class="alert alert-success">@ok</div>
 }
+@if (TempData["Error"] is string err && !string.IsNullOrEmpty(err))
+{
+    <div class="alert alert-danger">@err</div>
+}
 @if (!ViewContext.ViewData.ModelState.IsValid)
 {
     <div class="alert alert-danger">Моля, коригирайте грешките и опитайте отново.</div>
@@ -27,10 +31,22 @@
             <div class="table-responsive">
                 <table class="table table-sm mb-0 align-middle">
                     <tbody>
-                        <tr><td class="text-muted" style="width:220px;">Име</td><td>@Model.Form.FullName</td></tr>
-                        <tr><td class="text-muted">Телефон</td><td>@Model.Form.Telephone</td></tr>
-                        <tr><td class="text-muted">Адрес</td><td>@Model.Form.Address</td></tr>
-                        <tr><td class="text-muted">Населено Място</td><td>@Model.Form.Town</td></tr>
+                        <tr>
+                            <td class="text-muted" style="width:220px;">Име</td>
+                            <td>@Model.Form.FullName</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Телефон</td>
+                            <td>@Model.Form.Telephone</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Адрес</td>
+                            <td>@Model.Form.Address</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Населено място</td>
+                            <td>@Model.Form.Town</td>
+                        </tr>
                         <tr>
                             <td class="text-muted">Доставка</td>
                             <td>
@@ -39,7 +55,10 @@
                                 </span>
                             </td>
                         </tr>
-                        <tr><td class="text-muted">Имейл</td><td>@Model.Form.Email</td></tr>
+                        <tr>
+                            <td class="text-muted">Имейл</td>
+                            <td>@Model.Form.Email</td>
+                        </tr>
                         @* <tr><td class="text-muted">Дата на раждане</td><td>@(Model.Form.DateOfBirth?.ToString("dd.MM.yyyy") ?? "-")</td></tr> *@
                     </tbody>
                 </table>
@@ -49,11 +68,30 @@
             <div class="table-responsive">
                 <table class="table table-sm mb-0 align-middle">
                     <tbody>
-                        <tr><td class="text-muted" style="width:220px;">Пакет</td><td>@(Model.Form.Bundle != null ? $"{Model.Form.Bundle.Name} ({Model.Form.Bundle.Size} бр.)" : "-")</td></tr>
-                        <tr><td class="text-muted">Крайна цена</td><td>@Model.Form.TotalPrice.ToString("0.00") лв</td></tr>
-                        <tr><td class="text-muted">Промо код</td><td>@(string.IsNullOrWhiteSpace(Model.Form.PromoCode) ? "-" : Model.Form.PromoCode)</td></tr>
-                        <tr><td class="text-muted">Създадена</td><td>@Model.Form.CreatedUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td></tr>
-                        <tr><td class="text-muted">Обновена</td><td>@(Model.Form.UpdatedUtc?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "-")</td></tr>
+                        <tr>
+                            <td class="text-muted" style="width:220px;">Пакет</td>
+                            <td>
+                                @(Model.Form.Bundle != null
+                                                                ? $"{Model.Form.Bundle.Name} ({Model.Form.Bundle.Size} бр.)"
+                                                                : "-")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Крайна цена</td>
+                            <td>@Model.Form.TotalPrice.ToString("0.00") лв</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Промо код</td>
+                            <td>@(string.IsNullOrWhiteSpace(Model.Form.PromoCode) ? "-" : Model.Form.PromoCode)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Създадена</td>
+                            <td>@Model.Form.CreatedUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Обновена</td>
+                            <td>@(Model.Form.UpdatedUtc?.ToLocalTime().ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -65,10 +103,49 @@
         <div class="border rounded-3 p-3 p-md-4">
             <h2 class="h5 mb-3">Редакция</h2>
 
+            <!-- Edit form -->
             <form method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Form.Id" />
 
+                <!-- Package (bundle) edit -->
+                <div class="mb-3">
+                    <label asp-for="Form.BundleId" class="form-label">Пакет</label>
+                    <select asp-for="Form.BundleId" class="form-select">
+                        <option value="">- Без пакет -</option>
+                        @foreach (var b in Model.Bundles)
+                        {
+                            <option value="@b.Id">
+                                @b.Name (@b.Size бр.) - @b.Price.ToString("0.00") лв
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="Form.BundleId" class="text-danger"></span>
+                    <div class="form-text">
+                        Смени пакета (например от 2 към 1 или 3 и т.н.).
+                    </div>
+                </div>
+
+                <!-- Promo code edit (price will be recalculated server-side) -->
+                <div class="mb-3">
+                    <label asp-for="Form.PromoCode" class="form-label">Промо код</label>
+                    <input asp-for="Form.PromoCode" class="form-control" />
+                    <span asp-validation-for="Form.PromoCode" class="text-danger"></span>
+                    <div class="form-text">
+                        Кодът ще приложи процент отстъпка, ако е валиден и активен.
+                    </div>
+                </div>
+
+                <!-- Computed price info -->
+                <div class="mb-3">
+                    <label class="form-label">Крайна цена</label>
+                    <input class="form-control" value="@Model.Form.TotalPrice.ToString("0.00") лв" disabled />
+                    <div class="form-text">
+                        Изчислява се автоматично: цена на пакета минус отстъпка от промо кода (ако има).
+                    </div>
+                </div>
+
+                <!-- Delivery method -->
                 <div class="mb-3">
                     <label asp-for="Form.DeliveryMethod" class="form-label">Метод на доставка</label>
                     <select asp-for="Form.DeliveryMethod" class="form-select">
@@ -80,6 +157,7 @@
                     <span asp-validation-for="Form.DeliveryMethod" class="text-danger"></span>
                 </div>
 
+                <!-- Status -->
                 <div class="mb-3">
                     <label asp-for="Form.Status" class="form-label">Статус</label>
                     <select asp-for="Form.Status" class="form-select">
@@ -91,17 +169,40 @@
                     <span asp-validation-for="Form.Status" class="text-danger"></span>
                 </div>
 
+                <!-- Notes -->
                 <div class="mb-3">
                     <label asp-for="Form.Notes" class="form-label">Бележки</label>
-                    <textarea asp-for="Form.Notes" class="form-control" rows="6" maxlength="500" placeholder="До 500 символа..."></textarea>
-                    <div class="form-text">Оставащи символи: <span id="notesLeft">500</span></div>
+                    <textarea asp-for="Form.Notes"
+                              class="form-control"
+                              rows="6"
+                              maxlength="500"
+                              placeholder="До 500 символа..."></textarea>
+                    <div class="form-text">
+                        Оставащи символи: <span id="notesLeft">500</span>
+                    </div>
                     <span asp-validation-for="Form.Notes" class="text-danger"></span>
                 </div>
 
-                <div class="d-flex gap-2">
-                    <a class="btn btn-outline-dark" asp-page="/Admin/Orders"><i class="bi bi-arrow-left"></i> Назад</a>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Запази</button>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-outline-dark" asp-page="/Admin/Orders">
+                        <i class="bi bi-arrow-left"></i> Назад
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Запази
+                    </button>
                 </div>
+            </form>
+
+            <!-- Delete form (separate, no nested forms) -->
+            <hr />
+            <form method="post"
+                  asp-page-handler="Delete"
+                  onsubmit="return confirm('Сигурни ли сте, че искате да изтриете тази поръчка? Това действие е необратимо.');">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Form.Id" />
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="bi bi-trash"></i> Изтрий поръчка
+                </button>
             </form>
         </div>
     </div>

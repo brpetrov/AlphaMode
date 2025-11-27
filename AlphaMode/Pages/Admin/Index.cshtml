@@ -2,18 +2,57 @@
 @model AlphaMode.Pages.Admin.IndexModel
 @using AlphaMode.Helpers
 @using AlphaMode.Models
+@using System.Globalization
 @{
     ViewData["Title"] = "Админ — Табло";
+
+    var bg = CultureInfo.GetCultureInfo("bg-BG");
+    var currentMonthStart = new DateTime(Model.SelectedYear, Model.SelectedMonth, 1);
+    var monthLabel = currentMonthStart.ToString("MMMM yyyy", bg);
+
+    var prevMonth = currentMonthStart.AddMonths(-1);
+    var now = DateTime.Now;
+    var thisMonthStart = new DateTime(now.Year, now.Month, 1);
+    var nextMonth = currentMonthStart.AddMonths(1);
 }
 
 <h1 class="h3 mb-0"><i class="bi bi-speedometer2"></i> Табло</h1>
 
-<div class="d-flex align-items-center justify-content-between mb-4">
+<div class="d-flex align-items-center justify-content-between mt-3 mb-4">
     <div class="d-flex gap-2">
         <a asp-page="/Admin/Orders" class="btn btn-outline-dark"><i class="bi bi-box-seam"></i> Поръчки</a>
         <a asp-page="/Admin/Bundles" class="btn btn-outline-dark"><i class="bi bi-collection"></i> Пакети</a>
         <a asp-page="/Admin/PromoCodes" class="btn btn-outline-dark"><i class="bi bi-ticket-perforated"></i> Промо кодове</a>
         <a asp-page="/Admin/Reports/Promo" class="btn btn-outline-dark"><i class="bi bi-graph-up"></i> Отчети</a>
+    </div>
+
+    <!-- Month pager -->
+    <div class="d-flex align-items-center gap-2">
+        <span class="fw-semibold text-capitalize">@monthLabel</span>
+        <div class="btn-group btn-group-sm" role="group">
+            <a asp-page="/Admin/Index"
+               asp-route-year="@prevMonth.Year"
+               asp-route-month="@prevMonth.Month"
+               class="btn btn-outline-dark">
+                <i class="bi bi-chevron-left"></i> Предишен
+            </a>
+
+            @if (nextMonth <= thisMonthStart)
+            {
+                <a asp-page="/Admin/Index"
+                   asp-route-year="@nextMonth.Year"
+                   asp-route-month="@nextMonth.Month"
+                   class="btn btn-outline-dark">
+                    Следващ <i class="bi bi-chevron-right"></i>
+                </a>
+            }
+            else
+            {
+                <button class="btn btn-outline-secondary" disabled>
+                    Следващ <i class="bi bi-chevron-right"></i>
+                </button>
+            }
+        </div>
     </div>
 </div>
 
@@ -35,8 +74,9 @@
     <div class="col-12 col-md-6 col-xl-3">
         <div class="card h-100">
             <div class="card-body">
-                <div class="text-muted small">Оборот (този месец)</div>
+                <div class="text-muted small">Оборот (@monthLabel)</div>
                 <div class="display-6 fw-semibold">@Model.Kpi.MonthRevenue.ToString("0.00") лв</div>
+                <div class="small text-muted mt-1">Само статус „Доставена“</div>
             </div>
         </div>
     </div>
@@ -51,7 +91,7 @@
     <div class="col-12 col-md-6 col-xl-3">
         <div class="card h-100">
             <div class="card-body">
-                <div class="text-muted small">Доставени (месец)</div>
+                <div class="text-muted small">Доставени (@monthLabel)</div>
                 <div class="display-6 fw-semibold">@Model.Kpi.DeliveredThisMonth</div>
             </div>
         </div>
@@ -62,7 +102,7 @@
 <div class="card mb-4">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h5 m-0">Статуси (последни 30 дни)</h2>
+            <h2 class="h5 m-0">Статуси (@monthLabel)</h2>
             <a asp-page="/Admin/Orders" class="btn btn-sm btn-outline-primary">Към всички поръчки</a>
         </div>
 
@@ -71,7 +111,9 @@
             {
                 <div class="col-6 col-md-4 col-xl-2">
                     <div class="d-flex align-items-center justify-content-between border rounded p-2">
-                        <span class="badge @AlphaMode.Pages.Admin.IndexModel.StatusBadgeClass(s.Status)">@DisplayHelper.GetEnumDisplayName(s.Status)</span>
+                        <span class="badge @AlphaMode.Pages.Admin.IndexModel.StatusBadgeClass(s.Status)">
+                            @DisplayHelper.GetEnumDisplayName(s.Status)
+                        </span>
                         <span class="fw-semibold">@s.Count</span>
                     </div>
                 </div>
@@ -80,10 +122,10 @@
     </div>
 </div>
 
-<!-- Recent orders -->
+<!-- Recent orders (for selected month) -->
 <div class="card">
     <div class="card-body">
-        <h2 class="h5 mb-3">Последни поръчки</h2>
+        <h2 class="h5 mb-3">Последни поръчки (@monthLabel)</h2>
         <div class="table-responsive">
             <table class="table table-sm align-middle">
                 <thead class="table-light">
@@ -100,27 +142,44 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var o in Model.Recent)
+                    @if (Model.Recent.Count == 0)
                     {
                         <tr>
-                            <td><a asp-page="/Admin/OrderDetail" asp-route-id="@o.Id" class="text-decoration-underline">#@o.Id</a></td>
-                            <td>@o.FullName</td>
-                            <td>@o.Telephone</td>
-                            <td>@(o.Bundle != null ? o.Bundle.Name : "-")</td>
-                            <td class="text-end">@o.TotalPrice.ToString("0.00") лв</td>
-                            <td>@(string.IsNullOrWhiteSpace(o.PromoCode) ? "-" : o.PromoCode)</td>
-                            <td>@o.CreatedUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
-                            <td>
-                                <span class="badge @AlphaMode.Pages.Admin.IndexModel.StatusBadgeClass(o.Status)">
-                                    @DisplayHelper.GetEnumDisplayName(o.Status)
-                                </span>
-                            </td>
-                            <td class="text-end">
-                                <a asp-page="/Admin/OrderDetail" asp-route-id="@o.Id" class="btn btn-sm btn-outline-dark">
-                                    <i class="bi bi-eye"></i>
-                                </a>
+                            <td colspan="9" class="text-center text-muted">
+                                Няма поръчки за избрания месец.
                             </td>
                         </tr>
+                    }
+                    else
+                    {
+                        @foreach (var o in Model.Recent)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-page="/Admin/OrderDetail"
+                                       asp-route-id="@o.Id"
+                                       class="text-decoration-underline">#@o.Id</a>
+                                </td>
+                                <td>@o.FullName</td>
+                                <td>@o.Telephone</td>
+                                <td>@(o.Bundle != null ? o.Bundle.Name : "-")</td>
+                                <td class="text-end">@o.TotalPrice.ToString("0.00") лв</td>
+                                <td>@(string.IsNullOrWhiteSpace(o.PromoCode) ? "-" : o.PromoCode)</td>
+                                <td>@o.CreatedUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>
+                                    <span class="badge @AlphaMode.Pages.Admin.IndexModel.StatusBadgeClass(o.Status)">
+                                        @DisplayHelper.GetEnumDisplayName(o.Status)
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a asp-page="/Admin/OrderDetail"
+                                       asp-route-id="@o.Id"
+                                       class="btn btn-sm btn-outline-dark">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
