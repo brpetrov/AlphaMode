@@ -1,4 +1,5 @@
 ﻿@page
+@using AlphaMode.Models
 @model AlphaMode.Pages.OrderSuccessModel
 
 @{
@@ -79,6 +80,46 @@
                             <a class="btn btn-outline-primary" asp-page="/Index"><i class="bi bi-house"></i> Към началото</a>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="border rounded-3 p-3">
+                    <h3 class="h6 mb-2 text-warning">
+                        <i class="bi bi-exclamation-triangle"></i> Важно за пратката
+                    </h3>
+                    <ul class="mb-2">
+                        <li>
+                            Ще получите SMS от <strong>Еконт</strong>, когато пратката пристигне
+                            в офис/при куриера.
+                        </li>
+
+                        @if (Model.View.DeliveryMethod == DeliveryMethod.EcontOffice)
+                        {
+                            <li>
+                                Пратката се пази в офиса на Еконт само няколко дни, след което автоматично
+                                се връща към нас.
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                Курирът ще опита да се свърже с вас на посочения телефон за доставка
+                                до адрес.
+                            </li>
+                        }
+
+                        <li>
+                            Всяка върната пратка ни струва доставка в двете посоки. При многократно
+                            неполучени пратки можем да ограничим бъдещи поръчки с наложен платеж.
+                        </li>
+                    </ul>
+
+                    <p class="mb-0 px-3">
+                        Ако сте поръчали по грешка или искате промяна, моля свържете се с нас
+                        възможно най-бързо на <a href="tel:+359879566880.">+359 879 566 880</a>
+                        или <a href="mailto:alphamodebusiness@gmail.com">alphamodebusiness@gmail.com</a>
+                    </p>
                 </div>
             </div>
         }

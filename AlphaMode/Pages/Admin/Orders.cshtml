@@ -25,6 +25,9 @@
                 <th>Цена</th>
                 <th>Промо код</th>
                 <th>Дата</th>
+                <th style="min-width:160px;">
+                    Бележки
+                </th>
                 <th>Статус</th>
                 <th class="text-center" style="width:80px;"></th>
             </tr>
@@ -70,9 +73,23 @@
                     <td class="text-end">
                         @o.TotalPrice.ToString("0.00") лв
                     </td>
-               
-                    <td>@o.PromoCode</td>
-                    <td>@o.CreatedUtc.ToLocalTime()</td>
+                  <td class="promo-col">@o.PromoCode</td>
+                    <td data-order="@o.CreatedUtc.ToString("yyyy-MM-ddTHH:mm:ss")">
+                        @o.CreatedUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm:ss")
+                    </td>
+                    <td class="notes-col">
+                        @if (string.IsNullOrWhiteSpace(o.Notes))
+                        {
+                            <a asp-page="/Admin/OrderDetail" asp-route-id="@o.Id" class="text-decoration-underline"><i class="bi bi-pencil-square text-center"></i></a>
+                        }
+                        else
+                        {
+                            var full = o.Notes.Trim();
+                            var shortText = full.Length > 60 ? full.Substring(0, 60) + "…" : full;
+                            <a asp-page="/Admin/OrderDetail" asp-route-id="@o.Id" class="text-decoration-underline"><i class="bi bi-pencil-square"></i></a>
+                            <span title="@full">@shortText</span>
+                        }
+                    </td>
                     <td>
                         <a href="#"
                            class="order-status-link badge @AlphaMode.Pages.Admin.OrdersModel.StatusBadgeClass(o.Status) text-decoration-none"
@@ -170,9 +187,10 @@
           BUNDLE: 5,
           PRICE: 6,
           PROMO: 7,
-          DATE: 8,
-          STATUS: 9,
-          ACTIONS: 10
+          NOTES: 8
+          DATE: 9,
+          STATUS: 10,
+          ACTIONS: 11
         };
 
           // Clone header to create filter row

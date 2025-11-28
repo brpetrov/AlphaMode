@@ -6,6 +6,10 @@
     ViewData["Title"] = "Поръчка #" + Model.Form.Id;
 }
 
+<a asp-page="/Admin/Orders" class="my-3 h3 text-primary">
+    <i class="bi bi-arrow-left"></i> Назад
+</a>
+
 <h1 class="mb-4 fw-semibold">
     <i class="bi bi-receipt"></i> Поръчка <span class="text-muted">#@Model.Form.Id</span>
 </h1>

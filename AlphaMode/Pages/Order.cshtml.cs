@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace AlphaMode.Pages
 {
@@ -37,8 +38,17 @@ namespace AlphaMode.Pages
         [BindProperty(SupportsGet = true)]
         public int? SelectedBundleId { get; set; }
 
-        // List of available bundles (for dropdown)
+        [BindProperty]
+        public bool AcceptsCodPolicy { get; set; }
+
+        [BindProperty]
+        public string? TrapField { get; set; }
+
         public List<Bundle> Bundles { get; set; } = new();
+
+
+        private static readonly Regex BgPhoneRegex =
+            new(@"^(\+359|0)(\d{9})$", RegexOptions.Compiled);
 
         public async Task OnGetAsync(int? bundleId)
         {
@@ -83,19 +93,40 @@ namespace AlphaMode.Pages
                     .ToListAsync(ct);
 
                 if (string.IsNullOrWhiteSpace(Order.Address))
+                {
                     ModelState.AddModelError("Order.Address", "Въведете адрес/офис за доставка.");
+                }
 
                 if (string.IsNullOrWhiteSpace(Order.Town))
+                {
                     ModelState.AddModelError("Order.Town", "Въведете населено място (град/село).");
+                }
 
-                if (!ModelState.IsValid)
-                    return Page();
+                // Phone validation
+                if (string.IsNullOrWhiteSpace(Order.Telephone) ||
+                    !BgPhoneRegex.IsMatch(Order.Telephone.Trim()))
+                {
+                    ModelState.AddModelError("Order.Telephone",
+                        "Въведете валиден български номер (започващ с 0 или +359).");
+                }
+
+                if (!AcceptsCodPolicy)
+                {
+                    ModelState.AddModelError(nameof(AcceptsCodPolicy),
+                        "Моля, потвърдете, че ще получите пратката.");
+                }
+
+                if (!string.IsNullOrWhiteSpace(TrapField))
+                {
+
+                    ModelState.AddModelError(string.Empty,
+                        "Възникна грешка при обработката на поръчката. Моля, опитайте отново.");
+                }
 
                 var bundle = await _db.Bundles.FindAsync(new object?[] { Order.BundleId }, ct);
                 if (bundle == null || !bundle.IsActive)
                 {
                     ModelState.AddModelError("Order.BundleId", "Избраният пакет не е валиден.");
-                    return Page();
                 }
 
                 var basePrice = bundle.Price;
@@ -119,14 +150,10 @@ namespace AlphaMode.Pages
                     }
                 }
 
-                // If the form is invalid, return the page WITH PromoPercent set
                 if (!ModelState.IsValid)
                 {
                     return Page();
                 }
-
-
-                // === Anti-abuse: max 3 orders / month by IP OR Device ===
 
                 // 1) Identify source
                 var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
@@ -316,8 +343,8 @@ namespace AlphaMode.Pages
         {
             if (string.IsNullOrWhiteSpace(s)) return "";
             var d = new string(s.Where(char.IsDigit).ToArray());
-            if (d.StartsWith("0")) d = "359" + d[1..];  // 0XXXXXXXXX -> +359XXXXXXXXX
-            if (!d.StartsWith("359")) d = "359" + d;    // fallback
+            if (d.StartsWith("0")) d = "359" + d[1..];  
+            if (!d.StartsWith("359")) d = "359" + d;
             return "+" + d;
         }
         static string NormalizeEmail(string s) => (s ?? "").Trim().ToLowerInvariant();

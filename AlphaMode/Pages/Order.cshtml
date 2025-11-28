@@ -14,6 +14,7 @@
             <div class="text-danger mb-3">
                 <div asp-validation-summary="ModelOnly"></div>
             </div>
+            <span asp-validation-for="AcceptsCodPolicy" class="text-danger my-3"></span>
 
             <input type="hidden" id="promoPercentServer" value="@Model.PromoPercent" />
 
@@ -58,6 +59,12 @@
                     <label asp-for="Order.Town" class="form-label"></label>
                     <input asp-for="Order.Town" class="form-control" />
                     <span asp-validation-for="Order.Town" class="text-danger"></span>
+                </div>
+
+                @* TRAP FIELD FOR BOTS *@
+                <div class="col-12 d-none">
+                    <label class="form-label" for="trapField">Оставете празно</label>
+                    <input id="trapField" asp-for="TrapField" class="form-control" autocomplete="off" />
                 </div>
 
                 <div class="col-md-6">
@@ -120,6 +127,19 @@
                     <span>Крайна цена:</span>
                     <strong><span id="finalTotal">0.00</span> лв</strong>
                 </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="form-check text-start">
+                    <input class="form-check-input"
+                           asp-for="AcceptsCodPolicy"
+                           id="codPolicy" />
+                    <label class="form-check-label" for="codPolicy">
+                        Потвърждавам, че ще получа пратката в срок след пристигането ѝ
+                        в офис/на адрес.
+                    </label>
+                </div>
+                <span asp-validation-for="AcceptsCodPolicy" class="text-danger my-4"></span>
             </div>
 
             <div class="text-center mt-4">
