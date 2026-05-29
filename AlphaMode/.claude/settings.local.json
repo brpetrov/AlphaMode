@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(dotnet build C:\\\\Users\\\\brpet\\\\source\\\\repos\\\\AlphaMode\\\\AlphaMode --no-restore 2>&1 | Select-Object -Last 30)",
+      "PowerShell(SqlLocalDB.exe stop MSSQLLocalDB; SqlLocalDB.exe info MSSQLLocalDB)"
+    ]
+  }
+}

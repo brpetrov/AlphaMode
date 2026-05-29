@@ -1,0 +1,18 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/order-success"
+  to = "/order-success.html"
+  status = 200
+
+[[redirects]]
+  from = "/order"
+  to = "/order.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
