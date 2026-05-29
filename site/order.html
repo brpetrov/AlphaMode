@@ -48,8 +48,8 @@
             <div class="container" style="max-width: 820px;">
                 <h1 class="mb-4 text-center">Поръчка</h1>
 
-                <!-- Netlify Forms: data-netlify="true" enables form detection -->
                 <form name="order" method="POST" data-netlify="true" action="/order-success.html" netlify-honeypot="bot-field">
+                    <input type="hidden" name="form-name" value="order" />
 
                     <!-- Netlify honeypot (hidden from real users, catches bots) -->
                     <p class="d-none">
