@@ -48,13 +48,12 @@
             <div class="container" style="max-width: 820px;">
                 <h1 class="mb-4 text-center">Поръчка</h1>
 
-                <form name="order" method="POST" data-netlify="true" action="order-success.html" netlify-honeypot="bot-field">
-                    <input type="hidden" name="form-name" value="order" />
+                <form action="https://formspree.io/f/meedwjvy" method="POST">
+                    <input type="hidden" name="_next" value="https://alphamode.netlify.app/order-success.html" />
+                    <input type="hidden" name="_subject" value="Нова поръчка от AlphaMode" />
 
-                    <!-- Netlify honeypot (hidden from real users, catches bots) -->
-                    <p class="d-none">
-                        <label>Don't fill this out: <input name="bot-field" /></label>
-                    </p>
+                    <!-- Honeypot spam protection -->
+                    <input type="text" name="_gotcha" style="display:none" />
 
                     <div class="row g-3">
                         <div class="col-12">
